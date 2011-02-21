@@ -15,17 +15,17 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * Some helper methods for I/O handling
- * 
+ *
  * @author MysticX
- * 
+ *
  */
 class IOHelper {
-	
+
 	// singleton
 	private static IOHelper instance = new IOHelper();
-	
+
 	/**
-	 * 
+	 *
 	 * @return an instance of IOHelper
 	 */
 	public static IOHelper getInstance() {
@@ -37,22 +37,21 @@ class IOHelper {
 	 */
 	private IOHelper() {
 	}
-	
-	
+
+
 	// Buffer size for zipping
 	public static int BUFFER = 8192;
 
-	
+
 	/**
 	 * Zips given directory
-	 * 
+	 *
 	 * @param directory
 	 * @param zip
 	 * @throws IOException
 	 */
 	public void zipDirectory(File directory, File zip) throws IOException {
 		zip.getParentFile().mkdirs();
-//		zip.mkdirs();
 		if (!zip.exists()) {
 			zip.createNewFile();
 		}
@@ -82,15 +81,15 @@ class IOHelper {
 		}
 	}
 
-	
+
 	// streams
 	private BufferedInputStream in = null;
 	private BufferedOutputStream out = null;
 
-	
+
 	/**
 	 * Copies a directory
-	 * 
+	 *
 	 * @param source
 	 * @param target
 	 * @throws FileNotFoundException
@@ -116,10 +115,10 @@ class IOHelper {
 		}
 	}
 
-	
+
 	/**
 	 * Copies a file
-	 * 
+	 *
 	 * @param file
 	 * @param target
 	 * @throws FileNotFoundException
@@ -136,10 +135,10 @@ class IOHelper {
 		in.close();
 		out.close();
 	}
-	
+
 	/**
 	 * Copies a file
-	 * 
+	 *
 	 * @param file
 	 * @param target
 	 * @param append
@@ -159,10 +158,10 @@ class IOHelper {
 		out.close();
 	}
 
-	
+
 	/**
 	 * Delete given directory
-	 * 
+	 *
 	 * @param path
 	 * @return true, if successful
 	 */
@@ -179,10 +178,10 @@ class IOHelper {
 		}
 		return (path.delete());
 	}
-	
+
 	/**
 	 * Delete given file
-	 * 
+	 *
 	 * @param path
 	 * @return true, if successful
 	 */
@@ -190,10 +189,10 @@ class IOHelper {
 		MessageHandler.log(Level.FINE, "deleting file: "+path);
 		return (path.delete());
 	}
-	
+
 	/**
 	 * Delete old files in given directory
-	 * 
+	 *
 	 * @param path
 	 * @param world - the worldname
 	 * @param number of backups to keep
@@ -201,13 +200,13 @@ class IOHelper {
 	 */
 	public boolean deleteOldFiles(File path, String world, int number) {
 		boolean success = true;
-		
+
 		if (path.exists()) {
 			File[] files = path.listFiles(new BackupFilter(world));
-			
+
 			if (files.length>number) {
 				// too many files
-				
+
 				// sort array
 				Arrays.sort(files, new Comparator<File>() {
 
@@ -222,28 +221,26 @@ class IOHelper {
 
 					}
 				});
-				
+
 				for (int i = 0; i<files.length-number; i++) {
 					MessageHandler.log(Level.INFO, "deleting old backup file: "+files[i]);
 					if (!files[i].delete())
 						success = false;
 				}
-				
+
 			}
 		}
 		return success;
 	}
-	
-	
+
+
 	/**
 	 * Simple existence check for files or directories
-	 * 
+	 *
 	 * @param file
 	 */
 	private boolean checkFile(File file) {
 		if (!file.exists()) {
-//			l.warning("[BackupPlugin] Can't find specified file: "
-//					+ file.getAbsolutePath());
 			return false;
 		}
 		return true;
@@ -252,14 +249,14 @@ class IOHelper {
 }
 
 class BackupFilter implements FilenameFilter {
-	
+
 	String world;
-	
+
 	public BackupFilter(String world) {
 		super();
 		this.world=world;
 	}
-	
+
 	@Override
 	public boolean accept(File dir, String name) {
 		if (name.startsWith(world))
