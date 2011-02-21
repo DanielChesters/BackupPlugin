@@ -265,7 +265,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 	 * @return
 	 */
 	private boolean setupTimer(Runnable r, long delay, Integer period, TimeUnit tu) {
-		ScheduledFuture<?> sf = scheduler.scheduleAtFixedRate(r, tu.convert(delay, TimeUnit.MILLISECONDS), period, tu);
+		scheduler.scheduleAtFixedRate(r, tu.convert(delay, TimeUnit.MILLISECONDS), period, tu);
 
 		MessageHandler.info("Finished setting up a thread: " + r.getClass() + " Next run in: " + TimeUnit.MINUTES.convert(delay, TimeUnit.MILLISECONDS) + " minutes.");
 		return true;
