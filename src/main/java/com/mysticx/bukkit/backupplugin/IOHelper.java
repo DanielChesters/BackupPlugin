@@ -232,20 +232,6 @@ class IOHelper {
 		}
 		return success;
 	}
-
-
-	/**
-	 * Simple existence check for files or directories
-	 *
-	 * @param file
-	 */
-	private boolean checkFile(File file) {
-		if (!file.exists()) {
-			return false;
-		}
-		return true;
-	}
-
 }
 
 class BackupFilter implements FilenameFilter {
