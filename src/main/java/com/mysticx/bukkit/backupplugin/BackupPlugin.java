@@ -17,29 +17,26 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
-import org.bukkit.Server;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * BackupPlugin for Bukkit
  * 2011-01-18
- * 
+ *
  * BackupPlugin by MysticX is licensed under a Creative Commons
  * Attribution-NonCommercial-ShareAlike 3.0 Unported License.
  * http://creativecommons.org/licenses/by-nc-sa/3.0/
- * 
+ *
  * Permissions beyond the scope of this license may be available
  * at http://forum.hey0.net/showthread.php?tid=179
- * 
+ *
  * @author MysticX
  */
 public class BackupPlugin extends JavaPlugin implements Observer {
-	
+
 	// listeners
     private final BackupPluginPlayerListener playerListener = new BackupPluginPlayerListener(this);
 //    private final BackupPluginBlockListener blockListener = new BackupPluginBlockListener(this);
@@ -55,48 +52,39 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 	// Units
 	private BackupUnit bu;
 	private MapperUnit mu;
-    
 
-	public BackupPlugin (PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
-        super(pluginLoader, instance, desc, folder, plugin, cLoader);
-        
-//        File directory = new File(desc.getName());
-//        if (!directory.exists())
-//          directory.mkdir();
-        
-        MessageHandler.setServer(instance);
-    }
 
     /*
      * (non-Javadoc)
      * @see org.bukkit.plugin.Plugin#onEnable()
      */
     public void onEnable() {
+        MessageHandler.setServer(getServer());
         // Register our events
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.PLAYER_COMMAND, this.playerListener, Event.Priority.Normal, this);
 
         PluginDescriptionFile pdfFile = this.getDescription();
         MessageHandler.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
-   
+
         load();
 //        this.config = this.getConfiguration();
     }
-    
+
 	/**
 	 * Loads property files and initializes some other stuff
-	 * 
+	 *
 	 * @return true if successful
 	 */
 	protected boolean load() {
 //		Configuration config = this.getConfiguration();
-		
+
 		//TODO: use Bukkit config when its finally working!
 		com.mysticx.bukkit.backupplugin.Configuration config = new com.mysticx.bukkit.backupplugin.Configuration("BackupPlugin.properties");
 		config.load();
-	
+
 		String separator = System.getProperty("file.separator");
-		
+
 		// some important values
 		String world = config.getString("level-name", "world");
 		String backup_folder = config.getString("backup-path", "world-backups");
@@ -113,26 +101,26 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 		Boolean useLatest = config.getBoolean("use-latest", false);
 		String firstRun = config.getString("first-run", "1200");
 		String admins = config.getString("authorized-users", "");
-		
+
 		MessageHandler.setLogLevel(loglevel);
-		
+
 		// authorized users
 		authorizedUsers = new ArrayList<String>();
-		
+
 		String[] access = admins.split(";");
-		
+
 		String logInfo = "";
-		
+
 		for (String name: access) {
 			if (!name.isEmpty()) {
 				authorizedUsers.add(name);
 				logInfo+=name+", ";
 			}
 		}
-		
-		
+
+
 		MessageHandler.log(Level.FINE, String.format("There are %d user(s) in the authorized-users list: %s",authorizedUsers.size(),logInfo));
-		
+
 		// timeUnit
 		try {
 			TimeUnit tu = TimeUnit.valueOf(time_unit);
@@ -140,7 +128,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 		} catch (Exception e) {
 			MessageHandler.warning("Failed to parse time-unit, using default.");
 		}
-		
+
 		// init cache
 		this.cc = CacheControl.getInstance();
 		this.cc.setWorld(world);
@@ -158,39 +146,39 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 		this.mu.setMapperPath(new File(mapper_path));
 		this.mu.setUseLatest(useLatest);
 		this.mu.addObserver(this);
-		
+
 		String[] parameters = map_options.split(";");
 		this.mu.setMapOptions(parameters);
-		
+
 		// init scheduler
 		scheduler.shutdownNow();
 		scheduler = Executors.newScheduledThreadPool(2);
-		
+
 		// schedule timer
 		long backup_delay = -1;
 		long map_delay = -1;
-		
+
 		try {
 			long timeToExecuteB = calcNextPointOfTime(firstRun, "HHmm", TimeUnit.MILLISECONDS.convert(autobackup_period, timeunit));
 			backup_delay = timeToExecuteB-System.currentTimeMillis();
-			
+
 			long timeToExecuteM = calcNextPointOfTime(firstRun, "HHmm", TimeUnit.MILLISECONDS.convert(automap_period, timeunit));
 			map_delay = timeToExecuteM-System.currentTimeMillis();
 		} catch (ParseException pe) {
 			MessageHandler.log(Level.WARNING, "Failed to parse firstRun, disabled automatic execution", pe);
 		}
-		
+
 		if (autobackup_period != null && backup_delay >= 0 && autobackup_period > 0) {
 			setupTimer(bu, backup_delay, autobackup_period, this.timeunit);
 		}
-		
+
 		if (automap_period != null && map_delay >= 0 && automap_period > 0) {
 			setupTimer(mu, map_delay, automap_period, this.timeunit);
 		}
 
 		return true;
 	}
-    
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bukkit.plugin.Plugin#onDisable()
@@ -198,10 +186,10 @@ public class BackupPlugin extends JavaPlugin implements Observer {
     public void onDisable() {
         System.out.println("BackupPlugin disabled!");
     }
-    
+
     /**
      * Checks whether player is in debug mode or not
-     * 
+     *
      * @param player
      * @return
      */
@@ -215,16 +203,16 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 
     /**
      * Sets debug status of player
-     * 
+     *
      * @param player
      * @param value
      */
     public void setDebugging(final Player player, final boolean value) {
         debugees.put(player, value);
     }
-    
+
 	/**
-	 * 
+	 *
 	 * @param time
 	 * @param pattern
 	 * @param period
@@ -235,30 +223,30 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 	private long calcNextPointOfTime(String time, String pattern, long period) throws ParseException {
 		if (period <= 0)
 			return 0;
-		
+
 		Date d = new Date();
 
 		DateFormat df = new SimpleDateFormat(pattern);
 		df.setLenient(true);
 		Date date = df.parse(time);
-		
+
 		//TODO rewrite
 		d.setHours(date.getHours());
 		d.setMinutes(date.getMinutes());
 		d.setSeconds(0);
-		
+
 		MessageHandler.log(Level.FINEST, "firstRun: "+d.toString());
 
 		long nextRun = d.getTime();
-		
+
 		while (nextRun < System.currentTimeMillis()) {
 			MessageHandler.log(Level.FINEST, "Date is in the past, adding some  minutes: "+period/1000/60);
 			nextRun+=period;
 		}
-		
+
 		return nextRun;
 	}
-    
+
 	/**
 	 * Scheduled Executor for plugin units
 	 */
@@ -267,7 +255,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 
     /**
 	 * Starts a new timer with given Runnable and times
-	 * 
+	 *
 	 * @param r
 	 * 			  the Runnable object
 	 * @param delay
@@ -280,7 +268,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 	 */
 	private boolean setupTimer(Runnable r, long delay, Integer period, TimeUnit tu) {
 		ScheduledFuture<?> sf = scheduler.scheduleAtFixedRate(r, tu.convert(delay, TimeUnit.MILLISECONDS), period, tu);
-		
+
 		MessageHandler.info("Finished setting up a thread: " + r.getClass() + " Next run in: " + TimeUnit.MINUTES.convert(delay, TimeUnit.MILLISECONDS) + " minutes.");
 		return true;
 	}
@@ -295,13 +283,13 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 			pu.resetForce();
 		}
 	}
-	
+
 	/**
 	 * Backups current world
-	 * 
+	 *
 	 * @param force
 	 *            true disables cache usage
-	 * 
+	 *
 	 * @return true if successful
 	 */
 	protected void performBackup(boolean force) {
@@ -312,23 +300,23 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 
 	/**
 	 * Creates map of current world
-	 * 
+	 *
 	 * @param force
 	 *            true disables cache usage
-	 * 
+	 *
 	 * @return true if successful
 	 */
 	protected void performMapping(boolean force) {
 		mu.setForce(force);
 		scheduler.execute(mu);
 	}
-	
+
 	// authorized users go in here
 	List<String> authorizedUsers = new ArrayList<String>();
-	
+
 	/**
 	 * checks if an user is authorized to use ingame commands
-	 * 
+	 *
 	 * @param userName
 	 * @return
 	 */
