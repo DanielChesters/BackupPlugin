@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -227,20 +228,15 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 		if (period <= 0)
 			return 0;
 
-		Date d = new Date();
-
 		DateFormat df = new SimpleDateFormat(pattern);
 		df.setLenient(true);
-		Date date = df.parse(time);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(df.parse(time));
+		calendar.set(Calendar.SECOND, 0);
 
-		//TODO rewrite
-		d.setHours(date.getHours());
-		d.setMinutes(date.getMinutes());
-		d.setSeconds(0);
+		MessageHandler.log(Level.FINEST, "firstRun: " + calendar.toString());
 
-		MessageHandler.log(Level.FINEST, "firstRun: "+d.toString());
-
-		long nextRun = d.getTime();
+		long nextRun = calendar.getTimeInMillis();
 
 		while (nextRun < System.currentTimeMillis()) {
 			MessageHandler.log(Level.FINEST, "Date is in the past, adding some  minutes: "+period/1000/60);
