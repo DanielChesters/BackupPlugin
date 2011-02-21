@@ -16,7 +16,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -113,12 +112,12 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 
 		String[] access = admins.split(";");
 
-		String logInfo = "";
+		StringBuilder logInfo = new StringBuilder();
 
 		for (String name: access) {
 			if (!name.isEmpty()) {
-				authorizedUsers.add(name);
-				logInfo+=name+", ";
+				authorizedUsers.add(name.toLowerCase());
+				logInfo.append(name).append(", ");
 			}
 		}
 
@@ -325,12 +324,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 	 * @return
 	 */
 	protected boolean isAuthorized(String userName) {
-		for (String user: authorizedUsers) {
-			if (userName.compareToIgnoreCase(user)==0) {
-				return true;
-			}
-		}
-		return false;
+	    return authorizedUsers.contains(userName.toLowerCase());
 	}
 
     /* (non-Javadoc)
