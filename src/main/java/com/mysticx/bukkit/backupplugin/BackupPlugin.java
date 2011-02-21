@@ -16,11 +16,15 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.bukkit.authorblues.GroupUsers.GroupUsers;
 
 /**
  * BackupPlugin for Bukkit
@@ -37,9 +41,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BackupPlugin extends JavaPlugin implements Observer {
 
-	// listeners
-    private final BackupPluginPlayerListener playerListener = new BackupPluginPlayerListener(this);
-//    private final BackupPluginBlockListener blockListener = new BackupPluginBlockListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 
     // config
@@ -53,6 +54,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 	private BackupUnit bu;
 	private MapperUnit mu;
 
+	private Plugin groupUsersPlugin = null;
 
     /*
      * (non-Javadoc)
@@ -60,15 +62,19 @@ public class BackupPlugin extends JavaPlugin implements Observer {
      */
     public void onEnable() {
         MessageHandler.setServer(getServer());
-        // Register our events
-        PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_COMMAND, this.playerListener, Event.Priority.Normal, this);
 
         PluginDescriptionFile pdfFile = this.getDescription();
         MessageHandler.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
 
+        this.groupUsersPlugin = this.getServer().getPluginManager().getPlugin("GroupUsers");
+
+        if (groupUsersPlugin==null) {
+            MessageHandler.log(Level.FINE, "no group users plugin found, falling back to own config!");
+        } else {
+            MessageHandler.log(Level.FINE, "group users plugin found, using hey0's users.txt and group.txt!");
+        }
+
         load();
-//        this.config = this.getConfiguration();
     }
 
 	/**
@@ -77,8 +83,6 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 	 * @return true if successful
 	 */
 	protected boolean load() {
-//		Configuration config = this.getConfiguration();
-
 		//TODO: use Bukkit config when its finally working!
 		com.mysticx.bukkit.backupplugin.Configuration config = new com.mysticx.bukkit.backupplugin.Configuration("BackupPlugin.properties");
 		config.load();
@@ -328,5 +332,90 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 		}
 		return false;
 	}
+
+    /* (non-Javadoc)
+     * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        String commandName = cmd.getName().toLowerCase();
+        Player player = (Player) sender;
+        if ("backup".equals(commandName) && canUseCommand(player, "/backup")){
+            if (args.length > 1) {
+                return false;
+            } else {
+                boolean force = false;
+                if (args.length == 1) {
+                    force = Boolean.valueOf(args[0]);
+                }
+                String broadcast = player.getName() + " triggered world backup.";
+                MessageHandler.info(broadcast + " force = " + force);
+                MessageHandler.broadcast(broadcast);
+
+                this.performBackup(force);
+                return true;
+            }
+        } else if ("map".equals(commandName) && canUseCommand(player, "/map")) {
+            if (args.length > 1) {
+                return false;
+            } else {
+                boolean force = false;
+                if (args.length == 1) {
+                    force = Boolean.valueOf(args[0]);
+                }
+                String broadcast = player.getName() + " triggered world mapping.";
+                MessageHandler.info(broadcast + " force = " + force);
+                MessageHandler.broadcast(broadcast);
+
+                this.performMapping(force);
+                return true;
+            }
+        } else if ("breload".equals(commandName) && canUseCommand(player, "/breload")) {
+            String broadcast = player.getName() + " triggered config reload.";
+            MessageHandler.info(broadcast);
+            MessageHandler.broadcast(broadcast);
+
+            this.load();
+
+            return true;
+        } else if ("loglevel".equals(commandName) && canUseCommand(player, "/loglevel")) {
+            if (args.length == 1) {
+                MessageHandler.info(player.getName() + " is changing log level to " + args[0]);
+                if (MessageHandler.setLogLevel(args[0])) {
+                    player.sendMessage("Done!");
+                }
+                else {
+                    player.sendMessage("Failed!");
+                }
+            } else {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a given player can use a given command
+     * (Tries to user Group Users Plugin first, own config only if there is no plugin)
+     *
+     * @param player
+     * @param command
+     * @return
+     */
+    private boolean canUseCommand(Player player, String command) {
+        // check for groupUserPlugin
+        if (groupUsersPlugin!=null) {
+              GroupUsers groupUsers = (GroupUsers) groupUsersPlugin;
+              if (groupUsers.playerCanUseCommand(player, command)) {
+                  return true;
+              } else {
+                  return false;
+              }
+        // no groupUsersPlugin
+        } else {
+            return this.isAuthorized(player.getName());
+        }
+    }
 }
 

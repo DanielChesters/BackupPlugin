@@ -3,3 +3,17 @@ name: BackupPlugin
 main: com.mysticx.bukkit.backupplugin.BackupPlugin
 
 version: 0.8.5-SNAPSHOT
+
+commands:
+  backup:
+    description: generate a backup
+    usage: /backup <force> (optional)
+  map:
+    description: generate a map
+    usage: /map <force> (optional)
+  breload:
+    description: reload BackupPlugin configuration
+    usage: /breload
+  loglevel:
+    description: change The loglevel of BackupPlugin
+    usage: /loglevel <LEVEL>
