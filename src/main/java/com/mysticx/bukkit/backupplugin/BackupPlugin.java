@@ -380,12 +380,12 @@ public class BackupPlugin extends JavaPlugin implements Observer {
                 } else {
                     player.sendMessage("Failed!");
                 }
+                return true;
             } else {
                 return false;
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     /**
