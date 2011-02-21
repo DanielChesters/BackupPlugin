@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
@@ -89,24 +88,24 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 
 		String separator = System.getProperty("file.separator");
 
-		// some important values
-		String world = config.getString("level-name", "world");
-		String backup_folder = config.getString("backup-path", "world-backups");
-		String mapper_path = config.getString("mapper-executable", "mcmap"+separator+"mcmap.exe");
-		String map_folder = config.getString("map-path", "world-maps");
-		String map_options = config.getString("map-options", "-png -file $o $w;-night -png -file $o $w");
-		Integer autobackup_period = config.getInt("autobackup-period", 0);
-		Integer automap_period = config.getInt("automap-period", 0);
-		Integer cache_lifetime = config.getInt("cache-lifetime", 30);
-		String tempdir = backup_folder + "/temp";
-		String loglevel = config.getString("log-level", "INFO");
-		String time_unit = config.getString("time-unit", "MINUTES");
-		Integer num_backups = config.getInt("backup-history", 5);
-		Boolean useLatest = config.getBoolean("use-latest", false);
-		String firstRun = config.getString("first-run", "1200");
-		String admins = config.getString("authorized-users", "");
+        // some important values
+        String world = config.getString("level-name", "world");
+        String backup_folder = config.getString("backup-path", "world-backups");
+        String mapper_path = config.getString("mapper-executable", "mcmap" + separator + "mcmap.exe");
+        String map_folder = config.getString("map-path", "world-maps");
+        String map_options = config.getString("map-options", "-png -file $o $w;-night -png -file $o $w");
+        Integer autobackup_period = config.getInt("autobackup-period", 0);
+        Integer automap_period = config.getInt("automap-period", 0);
+        Integer cache_lifetime = config.getInt("cache-lifetime", 30);
+        String tempdir = config.getString("temp-path", backup_folder + "/temp");
+        String loglevel = config.getString("log-level", "INFO");
+        String time_unit = config.getString("time-unit", "MINUTES");
+        Integer num_backups = config.getInt("backup-history", 5);
+        Boolean useLatest = config.getBoolean("use-latest", false);
+        String firstRun = config.getString("first-run", "1200");
+        String admins = config.getString("authorized-users", "");
 
-		MessageHandler.setLogLevel(loglevel);
+        MessageHandler.setLogLevel(loglevel);
 
 		// authorized users
 		authorizedUsers = new ArrayList<String>();
