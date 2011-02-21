@@ -83,7 +83,10 @@ public class BackupPlugin extends JavaPlugin implements Observer {
      */
     protected boolean load() {
         // TODO: use Bukkit config when its finally working!
-        com.mysticx.bukkit.backupplugin.Configuration config = new com.mysticx.bukkit.backupplugin.Configuration("BackupPlugin.properties");
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
+        com.mysticx.bukkit.backupplugin.Configuration config = new com.mysticx.bukkit.backupplugin.Configuration(getDataFolder(), "config.properties");
         config.load();
 
         String separator = System.getProperty("file.separator");

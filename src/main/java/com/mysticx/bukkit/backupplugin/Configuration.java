@@ -15,13 +15,11 @@ import java.util.logging.Level;
 public class Configuration {
 
     private Properties properties;
-    private String name;
+    private File file;
 
-    public Configuration(String name) {
+    public Configuration(File dataFolder, String name) {
         this.properties = new Properties();
-        this.name = name;
-
-        File file = new File(name);
+        this.file = new File(dataFolder, name);
 
         if (file.exists())
             load();
@@ -31,7 +29,7 @@ public class Configuration {
 
     public void load() {
         try {
-            this.properties.load(new FileInputStream(this.name));
+            this.properties.load(new FileInputStream(this.file));
         } catch (IOException ioex) {
             MessageHandler.log(Level.SEVERE, "Can't load config!", ioex);
         }
@@ -39,7 +37,7 @@ public class Configuration {
 
     public void save() {
         try {
-            this.properties.store(new FileOutputStream(this.name), "BackupPlugin Config File");
+            this.properties.store(new FileOutputStream(this.file), "BackupPlugin Config File");
         } catch (IOException ioex) {
             MessageHandler.log(Level.SEVERE, "Can't save config!", ioex);
         }
@@ -47,7 +45,7 @@ public class Configuration {
 
     public Map<String, String> returnMap() throws FileNotFoundException, IOException {
         Map<String, String> map = new HashMap<String, String>();
-        BufferedReader reader = new BufferedReader(new FileReader(this.name));
+        BufferedReader reader = new BufferedReader(new FileReader(this.file));
         String line;
         while ((line = reader.readLine()) != null) {
             if ((line.trim().length() == 0) || (line.charAt(0) == '#')) {
