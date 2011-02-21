@@ -22,7 +22,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.bukkit.authorblues.GroupUsers.GroupUsers;
+import com.nijikokun.bukkit.Permissions.Permissions;
 
 /**
  * BackupPlugin for Bukkit 2011-01-18
@@ -51,7 +51,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
     private BackupUnit bu;
     private MapperUnit mu;
 
-    private Plugin groupUsersPlugin = null;
+    private Permissions permissions = null;
 
     /*
      * (non-Javadoc)
@@ -64,12 +64,13 @@ public class BackupPlugin extends JavaPlugin implements Observer {
         PluginDescriptionFile pdfFile = this.getDescription();
         MessageHandler.info(pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!");
 
-        this.groupUsersPlugin = this.getServer().getPluginManager().getPlugin("GroupUsers");
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("Permissions");
 
-        if (groupUsersPlugin == null) {
-            MessageHandler.log(Level.FINE, "no group users plugin found, falling back to own config!");
+        if (plugin == null) {
+            MessageHandler.log(Level.INFO, "No group users plugin found, falling back to own config!");
         } else {
-            MessageHandler.log(Level.FINE, "group users plugin found, using hey0's users.txt and group.txt!");
+            permissions = ((Permissions)plugin);
+            MessageHandler.log(Level.INFO, "Permissions plugin found, using Permission config");
         }
 
         load();
@@ -330,7 +331,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         String commandName = cmd.getName().toLowerCase();
         Player player = (Player) sender;
-        if ("backup".equals(commandName) && canUseCommand(player, "/backup")) {
+        if ("backup".equals(commandName) && canUseCommand(player, "BackupPlugin.backup")) {
             if (args.length > 1) {
                 return false;
             } else {
@@ -345,7 +346,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
                 this.performBackup(force);
                 return true;
             }
-        } else if ("map".equals(commandName) && canUseCommand(player, "/map")) {
+        } else if ("map".equals(commandName) && canUseCommand(player, "BackupPlugin.map")) {
             if (args.length > 1) {
                 return false;
             } else {
@@ -360,7 +361,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
                 this.performMapping(force);
                 return true;
             }
-        } else if ("breload".equals(commandName) && canUseCommand(player, "/breload")) {
+        } else if ("breload".equals(commandName) && canUseCommand(player, "BackupPlugin.admin")) {
             String broadcast = player.getName() + " triggered config reload.";
             MessageHandler.info(broadcast);
             MessageHandler.broadcast(broadcast);
@@ -368,7 +369,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
             this.load();
 
             return true;
-        } else if ("loglevel".equals(commandName) && canUseCommand(player, "/loglevel")) {
+        } else if ("loglevel".equals(commandName) && canUseCommand(player, "BackupPlugin.admin")) {
             if (args.length == 1) {
                 MessageHandler.info(player.getName() + " is changing log level to " + args[0]);
                 if (MessageHandler.setLogLevel(args[0])) {
@@ -385,18 +386,17 @@ public class BackupPlugin extends JavaPlugin implements Observer {
     }
 
     /**
-     * Checks if a given player can use a given command (Tries to user Group
-     * Users Plugin first, own config only if there is no plugin)
+     * Checks if a given player can use a given command (Tries to user Permissions
+     * Plugin first, own config only if there is no plugin)
      *
      * @param player
-     * @param command
+     * @param permission
      * @return
      */
-    private boolean canUseCommand(Player player, String command) {
+    private boolean canUseCommand(Player player, String permission) {
         // check for groupUserPlugin
-        if (groupUsersPlugin != null) {
-            GroupUsers groupUsers = (GroupUsers) groupUsersPlugin;
-            if (groupUsers.playerCanUseCommand(player, command)) {
+        if (permissions != null) {
+            if (permissions.getHandler().permission(player, permission)) {
                 return true;
             } else {
                 return false;
