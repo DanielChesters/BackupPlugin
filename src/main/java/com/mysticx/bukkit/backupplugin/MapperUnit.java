@@ -2,6 +2,7 @@ package com.mysticx.bukkit.backupplugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.Server;
@@ -56,7 +57,7 @@ public class MapperUnit extends PluginUnit {
      * @param map_options
      */
     public void setMapOptions(String[] map_options) {
-        this.map_options = map_options;
+        this.map_options = Arrays.copyOf(map_options, map_options.length);
     }
 
     /**
