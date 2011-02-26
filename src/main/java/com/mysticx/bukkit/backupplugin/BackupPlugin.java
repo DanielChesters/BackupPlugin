@@ -93,17 +93,17 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 
         // some important values
         String world = config.getString("level-name", "world");
-        String backup_folder = config.getString("backup-path", "world-backups");
-        String mapper_path = config.getString("mapper-executable", "mcmap" + separator + "mcmap.exe");
-        String map_folder = config.getString("map-path", "world-maps");
-        String map_options = config.getString("map-options", "-png -file $o $w;-night -png -file $o $w");
-        int autobackup_period = config.getInt("autobackup-period", 0);
-        int automap_period = config.getInt("automap-period", 0);
-        int cache_lifetime = config.getInt("cache-lifetime", 30);
-        String tempdir = config.getString("temp-path", backup_folder + "/temp");
+        String backupFolder = config.getString("backup-path", "world-backups");
+        String mapperPath = config.getString("mapper-executable", "mcmap" + separator + "mcmap.exe");
+        String mapFolder = config.getString("map-path", "world-maps");
+        String mapOptions = config.getString("map-options", "-png -file $o $w;-night -png -file $o $w");
+        int autobackupPeriod = config.getInt("autobackup-period", 0);
+        int automapPeriod = config.getInt("automap-period", 0);
+        int cacheLifetime = config.getInt("cache-lifetime", 30);
+        String tempdir = config.getString("temp-path", backupFolder + "/temp");
         String loglevel = config.getString("log-level", "INFO");
-        String time_unit = config.getString("time-unit", "MINUTES");
-        int num_backups = config.getInt("backup-history", 5);
+        String timeUnit = config.getString("time-unit", "MINUTES");
+        int numBackups = config.getInt("backup-history", 5);
         boolean useLatest = config.getBoolean("use-latest", false);
         String firstRun = config.getString("first-run", "1200");
         String admins = config.getString("authorized-users", "");
@@ -129,7 +129,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
 
         // timeUnit
         try {
-            TimeUnit tu = TimeUnit.valueOf(time_unit);
+            TimeUnit tu = TimeUnit.valueOf(timeUnit);
             this.timeunit = tu;
         } catch (Exception e) {
             MessageHandler.warning("Failed to parse time-unit, using default.");
@@ -139,21 +139,21 @@ public class BackupPlugin extends JavaPlugin implements Observer {
         this.cc = CacheControl.getInstance();
         this.cc.setWorld(world);
         this.cc.setTimeUnit(timeunit);
-        this.cc.setCacheLifetime(cache_lifetime);
+        this.cc.setCacheLifetime(cacheLifetime);
         this.cc.setTempDir(new File(tempdir));
-        this.cc.setCacheHistory(num_backups);
+        this.cc.setCacheHistory(numBackups);
 
         // init BackupUnit
-        this.bu = new BackupUnit(this.getServer(), new File(backup_folder), true);
+        this.bu = new BackupUnit(this.getServer(), new File(backupFolder), true);
         this.bu.addObserver(this);
 
         // init MapperUnit
-        this.mu = new MapperUnit(this.getServer(), new File(map_folder), false);
-        this.mu.setMapperPath(new File(mapper_path));
+        this.mu = new MapperUnit(this.getServer(), new File(mapFolder), false);
+        this.mu.setMapperPath(new File(mapperPath));
         this.mu.setUseLatest(useLatest);
         this.mu.addObserver(this);
 
-        String[] parameters = map_options.split(";");
+        String[] parameters = mapOptions.split(";");
         this.mu.setMapOptions(parameters);
 
         // init scheduler
@@ -161,25 +161,25 @@ public class BackupPlugin extends JavaPlugin implements Observer {
         scheduler = Executors.newScheduledThreadPool(2);
 
         // schedule timer
-        long backup_delay = -1;
-        long map_delay = -1;
+        long backupDelay = -1;
+        long mapDelay = -1;
 
         try {
-            long timeToExecuteB = calcNextPointOfTime(firstRun, "HHmm", TimeUnit.MILLISECONDS.convert(autobackup_period, timeunit));
-            backup_delay = timeToExecuteB - System.currentTimeMillis();
+            long timeToExecuteB = calcNextPointOfTime(firstRun, "HHmm", TimeUnit.MILLISECONDS.convert(autobackupPeriod, timeunit));
+            backupDelay = timeToExecuteB - System.currentTimeMillis();
 
-            long timeToExecuteM = calcNextPointOfTime(firstRun, "HHmm", TimeUnit.MILLISECONDS.convert(automap_period, timeunit));
-            map_delay = timeToExecuteM - System.currentTimeMillis();
+            long timeToExecuteM = calcNextPointOfTime(firstRun, "HHmm", TimeUnit.MILLISECONDS.convert(automapPeriod, timeunit));
+            mapDelay = timeToExecuteM - System.currentTimeMillis();
         } catch (ParseException pe) {
             MessageHandler.log(Level.WARNING, "Failed to parse firstRun, disabled automatic execution", pe);
         }
 
-        if (backup_delay >= 0 && autobackup_period > 0) {
-            setupTimer(bu, backup_delay, autobackup_period, this.timeunit);
+        if (backupDelay >= 0 && autobackupPeriod > 0) {
+            setupTimer(bu, backupDelay, autobackupPeriod, this.timeunit);
         }
 
-        if (map_delay >= 0 && automap_period > 0) {
-            setupTimer(mu, map_delay, automap_period, this.timeunit);
+        if (mapDelay >= 0 && automapPeriod > 0) {
+            setupTimer(mu, mapDelay, automapPeriod, this.timeunit);
         }
 
         return true;

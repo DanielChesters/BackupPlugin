@@ -118,18 +118,18 @@ public class MapperUnit extends PluginUnit {
 
             // modify parameters
             String filename = generateFilename(".png");
-            String map_parameters = new String(map_options[i]);
-            map_parameters = map_parameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
-            map_parameters = map_parameters.replace("$w", inputFolder.getAbsolutePath());
+            String mapParameters = new String(map_options[i]);
+            mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
+            mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
 
-            if (map_parameters.contains("$m")) {
-                map_parameters = map_parameters.replace("$m", mapper_path.getParent());
+            if (mapParameters.contains("$m")) {
+                mapParameters = mapParameters.replace("$m", mapper_path.getParent());
             }
 
-            MessageHandler.log(Level.FINE, "Mapper usage: " + mapper_path + " " + map_parameters);
+            MessageHandler.log(Level.FINE, "Mapper usage: " + mapper_path + " " + mapParameters);
 
             // generate maps
-            executeExternal(mapper_path, map_parameters);
+            executeExternal(mapper_path, mapParameters);
 
             // save latest.png at first run
             if (i == 0 && useLatest) {
