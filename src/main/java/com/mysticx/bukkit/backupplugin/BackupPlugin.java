@@ -401,14 +401,10 @@ public class BackupPlugin extends JavaPlugin implements Observer {
      * @return
      */
     private boolean canUseCommand(Player player, String permission) {
-        // check for groupUserPlugin
+        // check for Permissions
         if (permissions != null) {
-            if (permissions.getHandler().permission(player, permission)) {
-                return true;
-            } else {
-                return false;
-            }
-            // no groupUsersPlugin
+            return permissions.getHandler().permission(player, permission);
+        // no Permissions
         } else {
             return this.isAuthorized(player.getName());
         }
