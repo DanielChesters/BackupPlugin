@@ -159,7 +159,7 @@ public class MessageHandler {
      * @return calling class name
      */
     private static String getCallingClassName(int grade) {
-        String s = Thread.currentThread().getStackTrace()[grade].getClassName();
+        String s = Thread.currentThread().getStackTrace()[grade].getClass().getSimpleName();
         return s;
     }
 
