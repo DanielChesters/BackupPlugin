@@ -97,14 +97,14 @@ public class BackupPlugin extends JavaPlugin implements Observer {
         String mapper_path = config.getString("mapper-executable", "mcmap" + separator + "mcmap.exe");
         String map_folder = config.getString("map-path", "world-maps");
         String map_options = config.getString("map-options", "-png -file $o $w;-night -png -file $o $w");
-        Integer autobackup_period = config.getInt("autobackup-period", 0);
-        Integer automap_period = config.getInt("automap-period", 0);
-        Integer cache_lifetime = config.getInt("cache-lifetime", 30);
+        int autobackup_period = config.getInt("autobackup-period", 0);
+        int automap_period = config.getInt("automap-period", 0);
+        int cache_lifetime = config.getInt("cache-lifetime", 30);
         String tempdir = config.getString("temp-path", backup_folder + "/temp");
         String loglevel = config.getString("log-level", "INFO");
         String time_unit = config.getString("time-unit", "MINUTES");
-        Integer num_backups = config.getInt("backup-history", 5);
-        Boolean useLatest = config.getBoolean("use-latest", false);
+        int num_backups = config.getInt("backup-history", 5);
+        boolean useLatest = config.getBoolean("use-latest", false);
         String firstRun = config.getString("first-run", "1200");
         String admins = config.getString("authorized-users", "");
 
@@ -173,11 +173,11 @@ public class BackupPlugin extends JavaPlugin implements Observer {
             MessageHandler.log(Level.WARNING, "Failed to parse firstRun, disabled automatic execution", pe);
         }
 
-        if (autobackup_period != null && backup_delay >= 0 && autobackup_period > 0) {
+        if (backup_delay >= 0 && autobackup_period > 0) {
             setupTimer(bu, backup_delay, autobackup_period, this.timeunit);
         }
 
-        if (automap_period != null && map_delay >= 0 && automap_period > 0) {
+        if (map_delay >= 0 && automap_period > 0) {
             setupTimer(mu, map_delay, automap_period, this.timeunit);
         }
 
