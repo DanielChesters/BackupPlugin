@@ -118,7 +118,7 @@ public class MapperUnit extends PluginUnit {
 
             // modify parameters
             String filename = generateFilename(".png");
-            String mapParameters = new String(mapOptions[i]);
+            String mapParameters = mapOptions[i];
             mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
             mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
 
