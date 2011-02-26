@@ -22,7 +22,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
     protected CacheControl cc;
     protected Server etc;
     protected IOHelper iohelper;
-    protected File work_path;
+    protected File workPath;
 
     // values
     protected boolean isEnabled;
@@ -42,7 +42,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
         this.isEnabled = true;
         this.isForce = false;
         this.initialForce = false;
-        this.work_path = workdir;
+        this.workPath = workdir;
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
         this.isEnabled = true;
         this.isForce = force;
         this.initialForce = force;
-        this.work_path = workdir;
+        this.workPath = workdir;
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * @param folder
      */
     public void setWorkDir(File work_path) {
-        this.work_path = work_path;
+        this.workPath = work_path;
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * @return working directory
      */
     protected File getWorkDir() {
-        return work_path;
+        return workPath;
     }
 
     /**

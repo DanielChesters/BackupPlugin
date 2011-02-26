@@ -18,8 +18,8 @@ import org.bukkit.Server;
 public class MapperUnit extends PluginUnit {
 
     // values
-    private File mapper_path;
-    private String[] map_options;
+    private File mapperPath;
+    private String[] mapOptions;
     private boolean useLatest;
 
     /**
@@ -44,10 +44,10 @@ public class MapperUnit extends PluginUnit {
      * @param mapper_path
      */
     public void setMapperPath(File mapper_tool) {
-        this.mapper_path = mapper_tool;
-        if (mapper_path == null || !mapper_path.exists()) {
+        this.mapperPath = mapper_tool;
+        if (mapperPath == null || !mapperPath.exists()) {
             setEnabled(false);
-            MessageHandler.warning("Disabled MapperUnit, mapper_path invalid: " + mapper_path);
+            MessageHandler.warning("Disabled MapperUnit, mapper_path invalid: " + mapperPath);
         }
     }
 
@@ -57,7 +57,7 @@ public class MapperUnit extends PluginUnit {
      * @param map_options
      */
     public void setMapOptions(String[] map_options) {
-        this.map_options = Arrays.copyOf(map_options, map_options.length);
+        this.mapOptions = Arrays.copyOf(map_options, map_options.length);
     }
 
     /**
@@ -113,23 +113,23 @@ public class MapperUnit extends PluginUnit {
         MessageHandler.log(Level.FINEST, "got lock, starting map generation");
 
         // do mappings
-        for (int i = 0; i < map_options.length; i++) {
-            MessageHandler.info("Mapping pass " + (i + 1) + " of " + map_options.length + "...");
+        for (int i = 0; i < mapOptions.length; i++) {
+            MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
 
             // modify parameters
             String filename = generateFilename(".png");
-            String mapParameters = new String(map_options[i]);
+            String mapParameters = new String(mapOptions[i]);
             mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
             mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
 
             if (mapParameters.contains("$m")) {
-                mapParameters = mapParameters.replace("$m", mapper_path.getParent());
+                mapParameters = mapParameters.replace("$m", mapperPath.getParent());
             }
 
-            MessageHandler.log(Level.FINE, "Mapper usage: " + mapper_path + " " + mapParameters);
+            MessageHandler.log(Level.FINE, "Mapper usage: " + mapperPath + " " + mapParameters);
 
             // generate maps
-            executeExternal(mapper_path, mapParameters);
+            executeExternal(mapperPath, mapParameters);
 
             // save latest.png at first run
             if (i == 0 && useLatest) {

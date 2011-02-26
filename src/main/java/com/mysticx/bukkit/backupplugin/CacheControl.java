@@ -48,8 +48,8 @@ public class CacheControl {
     private File world;
 
     // cache lifetime
-    private int cache_lifetime;
-    private int cache_history;
+    private int cacheLifetime;
+    private int cachehistory;
     private TimeUnit tu;
     private Timer timer;
     private Lock lock;
@@ -62,8 +62,8 @@ public class CacheControl {
         this.cache = null;
         this.world = null;
         this.tu = TimeUnit.MINUTES;
-        this.cache_lifetime = 30;
-        this.cache_history = 5;
+        this.cacheLifetime = 30;
+        this.cachehistory = 5;
         this.timer = new Timer();
         this.lock = new ReentrantLock();
     }
@@ -143,7 +143,7 @@ public class CacheControl {
      *            according to TimeUnit
      */
     public void setCacheLifetime(int lifetime) {
-        this.cache_lifetime = lifetime;
+        this.cacheLifetime = lifetime;
     }
 
     /**
@@ -153,7 +153,7 @@ public class CacheControl {
      *            number of backups to keep
      */
     public void setCacheHistory(int history) {
-        this.cache_history = history;
+        this.cachehistory = history;
     }
 
     /**
@@ -162,7 +162,7 @@ public class CacheControl {
      * @return true, if cache is too old
      */
     private boolean isCacheObsolete() {
-        return (!this.cache.exists() || (System.currentTimeMillis() - this.cache.lastModified()) > tu.toMillis(this.cache_lifetime));
+        return (!this.cache.exists() || (System.currentTimeMillis() - this.cache.lastModified()) > tu.toMillis(this.cacheLifetime));
     }
 
     /**
@@ -170,7 +170,7 @@ public class CacheControl {
      */
     private void scheduleTimer() {
         timer = new Timer();
-        timer.schedule(new CacheCleanerTask(), tu.toMillis(this.cache_lifetime));
+        timer.schedule(new CacheCleanerTask(), tu.toMillis(this.cacheLifetime));
         MessageHandler.log(Level.FINEST, "CacheCleaner was scheduled.");
     }
 
@@ -283,8 +283,8 @@ public class CacheControl {
             iohelper.zipDirectory(cache, outputFile);
             MessageHandler.log(Level.FINEST, "persistCache() finished zip operation..");
 
-            if (cache_history > 0) {
-                iohelper.deleteOldFiles(cache.getParentFile(), this.world.getName(), cache_history);
+            if (cachehistory > 0) {
+                iohelper.deleteOldFiles(cache.getParentFile(), this.world.getName(), cachehistory);
             }
             return true;
         } catch (IOException e) {
