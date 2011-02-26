@@ -85,7 +85,7 @@ public class SysCommandExecutor {
             exitStatus = process.waitFor();
 
         } catch (InterruptedException ex) {
-            throw new Exception(ex.getMessage());
+            throw new Exception(ex);
 
         } finally {
             /* notify output and error read threads to stop reading */
