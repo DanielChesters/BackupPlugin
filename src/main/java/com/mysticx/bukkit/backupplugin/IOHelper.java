@@ -208,22 +208,7 @@ class IOHelper {
                 // too many files
 
                 // sort array
-                Arrays.sort(files, new Comparator<File>() {
-
-                    @Override
-                    public int compare(File o1, File o2) {
-                        if (o1.lastModified() == o2.lastModified()) {
-                            return 0;
-                        }
-                        if (o1.lastModified() < o2.lastModified()) {
-                            return -1;
-                        }
-                        else {
-                            return 1;
-                        }
-
-                    }
-                });
+                Arrays.sort(files, new FileComparator());
 
                 for (int i = 0; i < files.length - number; i++) {
                     MessageHandler.log(Level.INFO, "deleting old backup file: " + files[i]);
@@ -235,6 +220,23 @@ class IOHelper {
             }
         }
         return success;
+    }
+
+    private static class FileComparator implements Comparator<File> {
+
+        @Override
+        public int compare(File o1, File o2) {
+            if (o1.lastModified() == o2.lastModified()) {
+                return 0;
+            }
+            if (o1.lastModified() < o2.lastModified()) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+
+        }
     }
 }
 
