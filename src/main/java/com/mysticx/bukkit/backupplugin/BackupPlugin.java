@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.Executors;
@@ -38,7 +39,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
  */
 public class BackupPlugin extends JavaPlugin implements Observer {
 
-    private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
+    private final Map<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 
     // config
     // private Configuration config;
