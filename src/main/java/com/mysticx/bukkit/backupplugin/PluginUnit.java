@@ -76,8 +76,8 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @param folder
      */
-    public void setWorkDir(File work_path) {
-        this.workPath = work_path;
+    public void setWorkDir(File workPath) {
+        this.workPath = workPath;
     }
 
     /**

@@ -43,8 +43,8 @@ public class MapperUnit extends PluginUnit {
      *
      * @param mapper_path
      */
-    public void setMapperPath(File mapper_tool) {
-        this.mapperPath = mapper_tool;
+    public void setMapperPath(File mapperTool) {
+        this.mapperPath = mapperTool;
         if (mapperPath == null || !mapperPath.exists()) {
             setEnabled(false);
             MessageHandler.warning("Disabled MapperUnit, mapper_path invalid: " + mapperPath);
@@ -54,10 +54,10 @@ public class MapperUnit extends PluginUnit {
     /**
      * Sets mapping options
      *
-     * @param map_options
+     * @param mapOptions
      */
-    public void setMapOptions(String[] map_options) {
-        this.mapOptions = Arrays.copyOf(map_options, map_options.length);
+    public void setMapOptions(String[] mapOptions) {
+        this.mapOptions = Arrays.copyOf(mapOptions, mapOptions.length);
     }
 
     /**

@@ -49,7 +49,7 @@ public class CacheControl {
 
     // cache lifetime
     private int cacheLifetime;
-    private int cachehistory;
+    private int cacheHistory;
     private TimeUnit tu;
     private Timer timer;
     private Lock lock;
@@ -63,7 +63,7 @@ public class CacheControl {
         this.world = null;
         this.tu = TimeUnit.MINUTES;
         this.cacheLifetime = 30;
-        this.cachehistory = 5;
+        this.cacheHistory = 5;
         this.timer = new Timer();
         this.lock = new ReentrantLock();
     }
@@ -153,7 +153,7 @@ public class CacheControl {
      *            number of backups to keep
      */
     public void setCacheHistory(int history) {
-        this.cachehistory = history;
+        this.cacheHistory = history;
     }
 
     /**
@@ -283,8 +283,8 @@ public class CacheControl {
             iohelper.zipDirectory(cache, outputFile);
             MessageHandler.log(Level.FINEST, "persistCache() finished zip operation..");
 
-            if (cachehistory > 0) {
-                iohelper.deleteOldFiles(cache.getParentFile(), this.world.getName(), cachehistory);
+            if (cacheHistory > 0) {
+                iohelper.deleteOldFiles(cache.getParentFile(), this.world.getName(), cacheHistory);
             }
             return true;
         } catch (IOException e) {
