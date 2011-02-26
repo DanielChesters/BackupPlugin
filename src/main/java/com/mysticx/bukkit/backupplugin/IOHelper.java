@@ -104,7 +104,7 @@ class IOHelper {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void copyDir(File source, File target) throws FileNotFoundException, IOException {
+    public void copyDir(File source, File target) throws IOException {
 
         File[] files = source.listFiles();
         target.mkdirs();
@@ -125,7 +125,7 @@ class IOHelper {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void copyFile(File file, File target) throws FileNotFoundException, IOException {
+    public void copyFile(File file, File target) throws IOException {
         in = new BufferedInputStream(new FileInputStream(file));
         out = new BufferedOutputStream(new FileOutputStream(target, true));
         int bytes = 0;
@@ -145,7 +145,7 @@ class IOHelper {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void copyFile(File file, File target, boolean append) throws FileNotFoundException, IOException {
+    public void copyFile(File file, File target, boolean append) throws IOException {
         MessageHandler.log(Level.FINEST, "copy operation: " + file + " to " + target + " (" + append + ")");
         in = new BufferedInputStream(new FileInputStream(file));
         out = new BufferedOutputStream(new FileOutputStream(target, append));
