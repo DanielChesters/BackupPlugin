@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -346,6 +347,17 @@ public class BackupPlugin extends JavaPlugin implements Observer {
                 return reload(player.getName());
             } else if ("loglevel".equals(commandName) && canUseCommand(player, "BackupPlugin.admin")) {
                 return loglevel(args, player.getName(), player);
+            }
+        } else if (sender instanceof ConsoleCommandSender) {
+            String name = "An Administrator";
+            if ("backup".equals(commandName)) {
+                return backup(args, name);
+            } else if ("map".equals(commandName)) {
+                return map(args, name);
+            } else if ("breload".equals(commandName)) {
+                return reload(name);
+            } else if ("loglevel".equals(commandName)) {
+                return loglevel(args, name, null);
             }
         }
         return true;
