@@ -130,7 +130,7 @@ public class SysCommandExecutor {
         String[] envTokenArray = new String[fEnvironmentVarList.size()];
         Iterator<EnvironmentVar> envVarIter = fEnvironmentVarList.iterator();
         int nEnvVarIndex = 0;
-        while (envVarIter.hasNext() == true) {
+        while (envVarIter.hasNext()) {
             EnvironmentVar envVar = (EnvironmentVar) (envVarIter.next());
             String envVarToken = envVar.fName + "=" + envVar.fValue;
             envTokenArray[nEnvVarIndex++] = envVarToken;
