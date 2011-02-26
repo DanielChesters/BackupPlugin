@@ -25,6 +25,8 @@ public class MessageHandler {
     private static final String PLUGIN_PREFIX = "[BackupPlugin] ";
     private static Level logLevel = Level.INFO;
 
+    private static boolean debug;
+
     /**
      * Logs a message with PLUGIN_PREFIX
      *
@@ -134,8 +136,11 @@ public class MessageHandler {
      * @return modified String
      */
     private static String addPrefix(String message) {
-        //return PLUGIN_PREFIX + "(" + getCallingClassName(4) + ") " + message;
-        return PLUGIN_PREFIX + " " + message;
+        if (debug) {
+            return PLUGIN_PREFIX + "(" + getCallingClassName(4) + ") " + message;
+        } else {
+            return PLUGIN_PREFIX + " " + message;
+        }
     }
 
     /**
@@ -160,6 +165,13 @@ public class MessageHandler {
 
     protected static void setServer(Server instance) {
         server = instance;
+    }
+
+    /**
+     * @param debug
+     */
+    public static void setDebug(boolean debug) {
+        MessageHandler.debug = debug;
     }
 
 }

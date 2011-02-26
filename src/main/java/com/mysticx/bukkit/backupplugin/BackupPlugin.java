@@ -109,6 +109,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
         String admins = config.getString("authorized-users", "");
 
         MessageHandler.setLogLevel(loglevel);
+        MessageHandler.setDebug(config.getBoolean("debug", false));
 
         // authorized users
         authorizedUsers = new ArrayList<String>();
