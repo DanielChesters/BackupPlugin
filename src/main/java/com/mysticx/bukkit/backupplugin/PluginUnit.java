@@ -196,7 +196,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * main functionality of Unit
      *
      */
-    abstract public void run();
+    public abstract void run();
 
     /**
      * main functionality of Unit

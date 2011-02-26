@@ -40,7 +40,7 @@ class IOHelper {
     }
 
     // Buffer size for zipping
-    private final static int BUFFER = 8192;
+    private static final int BUFFER = 8192;
 
     /**
      * Zips given directory
