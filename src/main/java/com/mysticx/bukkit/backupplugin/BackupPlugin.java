@@ -339,58 +339,80 @@ public class BackupPlugin extends JavaPlugin implements Observer {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if ("backup".equals(commandName) && canUseCommand(player, "BackupPlugin.backup")) {
-                if (args.length > 1) {
-                    return false;
-                } else {
-                    boolean force = false;
-                    if (args.length == 1) {
-                        force = Boolean.valueOf(args[0]);
-                    }
-                    String broadcast = player.getName() + " triggered world backup.";
-                    MessageHandler.info(broadcast + " force = " + force);
-                    MessageHandler.broadcast(broadcast);
-
-                    this.performBackup(force);
-                    return true;
-                }
+                return backup(args, player.getName());
             } else if ("map".equals(commandName) && canUseCommand(player, "BackupPlugin.map")) {
-                if (args.length > 1) {
-                    return false;
-                } else {
-                    boolean force = false;
-                    if (args.length == 1) {
-                        force = Boolean.valueOf(args[0]);
-                    }
-                    String broadcast = player.getName() + " triggered world mapping.";
-                    MessageHandler.info(broadcast + " force = " + force);
-                    MessageHandler.broadcast(broadcast);
-
-                    this.performMapping(force);
-                    return true;
-                }
+                return map(args, player.getName());
             } else if ("breload".equals(commandName) && canUseCommand(player, "BackupPlugin.admin")) {
-                String broadcast = player.getName() + " triggered config reload.";
-                MessageHandler.info(broadcast);
-                MessageHandler.broadcast(broadcast);
-
-                this.load();
-
-                return true;
+                return reload(player.getName());
             } else if ("loglevel".equals(commandName) && canUseCommand(player, "BackupPlugin.admin")) {
-                if (args.length == 1) {
-                    MessageHandler.info(player.getName() + " is changing log level to " + args[0]);
-                    if (MessageHandler.setLogLevel(args[0])) {
-                        player.sendMessage("Done!");
-                    } else {
-                        player.sendMessage("Failed!");
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
+                return loglevel(args, player.getName(), player);
             }
         }
         return true;
+    }
+
+    private boolean loglevel(String[] args, String name, Player player) {
+        if (args.length == 1) {
+            MessageHandler.info(name + " is changing log level to " + args[0]);
+            String message;
+            if (MessageHandler.setLogLevel(args[0])) {
+                message = "Done!";
+            } else {
+                message = "Failed!";
+            }
+            if (player == null) {
+                MessageHandler.info(message);
+            } else {
+                player.sendMessage(message);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean reload(String name) {
+        String broadcast = name + " triggered config reload.";
+        MessageHandler.info(broadcast);
+        MessageHandler.broadcast(broadcast);
+
+        this.load();
+
+        return true;
+    }
+
+    private boolean map(String[] args, String name) {
+        if (args.length > 1) {
+            return false;
+        } else {
+            boolean force = false;
+            if (args.length == 1) {
+                force = Boolean.valueOf(args[0]);
+            }
+            String broadcast = name + " triggered world mapping.";
+            MessageHandler.info(broadcast + " force = " + force);
+            MessageHandler.broadcast(broadcast);
+
+            this.performMapping(force);
+            return true;
+        }
+    }
+
+    private boolean backup(String[] args, String name) {
+        if (args.length > 1) {
+            return false;
+        } else {
+            boolean force = false;
+            if (args.length == 1) {
+                force = Boolean.valueOf(args[0]);
+            }
+            String broadcast = name + " triggered world backup.";
+            MessageHandler.info(broadcast + " force = " + force);
+            MessageHandler.broadcast(broadcast);
+
+            this.performBackup(force);
+            return true;
+        }
     }
 
     /**
