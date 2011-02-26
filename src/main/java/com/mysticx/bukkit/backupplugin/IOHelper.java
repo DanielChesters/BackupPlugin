@@ -56,7 +56,6 @@ class IOHelper {
         }
         FileOutputStream fileOutputStream = new FileOutputStream(zip);
         ZipOutputStream zos = new ZipOutputStream(fileOutputStream);
-        ;
         try {
             zip(directory, directory, zos);
         } catch (IOException ioex) {
