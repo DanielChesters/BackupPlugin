@@ -38,7 +38,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
  *
  * @author MysticX
  */
-public class BackupPlugin extends JavaPlugin implements Observer {
+public final class BackupPlugin extends JavaPlugin implements Observer {
 
     private final Map<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 

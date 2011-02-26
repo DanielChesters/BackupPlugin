@@ -43,7 +43,7 @@ import java.util.List;
  * @author Venkat
  *
  */
-public class SysCommandExecutor {
+public final class SysCommandExecutor {
     private String fWorkingDirectory = null;
     private List<EnvironmentVar> fEnvironmentVarList = null;
 

@@ -13,7 +13,7 @@ import org.bukkit.Server;
  * @author MysticX
  *
  */
-public class BackupUnit extends PluginUnit {
+public final class BackupUnit extends PluginUnit {
 
     /**
      * Default constructor

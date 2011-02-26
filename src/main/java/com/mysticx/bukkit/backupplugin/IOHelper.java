@@ -20,7 +20,7 @@ import java.util.zip.ZipOutputStream;
  * @author MysticX
  *
  */
-class IOHelper {
+public final class IOHelper {
 
     // singleton
     private static IOHelper instance = new IOHelper();

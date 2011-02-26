@@ -15,7 +15,7 @@ import org.bukkit.Server;
  * @author MysticX
  *
  */
-public class MapperUnit extends PluginUnit {
+public final class MapperUnit extends PluginUnit {
 
     // values
     private File mapperPath;

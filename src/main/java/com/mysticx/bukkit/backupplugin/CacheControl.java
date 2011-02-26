@@ -20,7 +20,7 @@ import java.util.logging.Level;
  * @author MysticX
  *
  */
-public class CacheControl {
+public final class CacheControl {
 
     // singleton
     private static final CacheControl cc = new CacheControl();;
