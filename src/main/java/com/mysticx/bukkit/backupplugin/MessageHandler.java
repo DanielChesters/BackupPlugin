@@ -164,8 +164,7 @@ public class MessageHandler {
      * @return calling class name
      */
     private static String getCallingClassName(int grade) {
-        String s = Thread.currentThread().getStackTrace()[grade].getClass().getSimpleName();
-        return s;
+        return Thread.currentThread().getStackTrace()[grade].getClass().getSimpleName();
     }
 
     protected static void setServer(Server instance) {
