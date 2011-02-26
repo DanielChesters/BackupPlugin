@@ -99,8 +99,7 @@ public final class MapperUnit extends PluginUnit {
             MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
             return;
         } finally {
-            // TODO: enable saving again
-            // etc.getServer().useConsoleCommand("save-on");
+            ConsoleHelper.queueConsoleCommand(etc, "save-on");
         }
 
         // create folders

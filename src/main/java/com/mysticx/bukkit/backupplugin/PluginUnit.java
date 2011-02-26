@@ -175,13 +175,9 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * afterwards
      */
     protected final void saveWorld() {
-        // TODO: save world and disable saving for mapping process
-        // etc.getServer().useConsoleCommand("save-on"); // Ensures that saving
-        // is enabled
-        // etc.getServer().useConsoleCommand("save-all");
-        // etc.getServer().useConsoleCommand("save-off");
-
-        // sleepaWhile(sleepTime);
+       ConsoleHelper.queueConsoleCommand(etc, "save-on");
+       ConsoleHelper.queueConsoleCommand(etc, "save-all");
+       ConsoleHelper.queueConsoleCommand(etc, "save-off");
     }
 
     /**

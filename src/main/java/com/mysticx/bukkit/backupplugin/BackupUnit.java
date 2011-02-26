@@ -66,8 +66,7 @@ public final class BackupUnit extends PluginUnit {
         } catch (Exception e) {
             MessageHandler.log(Level.SEVERE, "Error during backup: ", e);
         } finally {
-            // TODO: enable saving
-            // etc.getServer().useConsoleCommand("save-on");
+            ConsoleHelper.queueConsoleCommand(etc, "save-on");
             setChanged();
             notifyObservers();
         }
