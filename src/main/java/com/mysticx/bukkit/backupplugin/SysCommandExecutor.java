@@ -83,7 +83,7 @@ public class SysCommandExecutor {
         try {
             exitStatus = process.waitFor();
 
-        } catch (Throwable ex) {
+        } catch (InterruptedException ex) {
             throw new Exception(ex.getMessage());
 
         } finally {
