@@ -1,14 +1,9 @@
 package com.mysticx.bukkit.backupplugin;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -29,7 +24,14 @@ public class Configuration {
 
     public void load() {
         try {
-            this.properties.load(new FileInputStream(this.file));
+            final FileInputStream inStream = new FileInputStream(this.file);
+            try {
+                this.properties.load(inStream);
+            } catch (IOException ioex) {
+                MessageHandler.log(Level.SEVERE, "Can't load config!", ioex);
+            } finally {
+                inStream.close();
+            }
         } catch (IOException ioex) {
             MessageHandler.log(Level.SEVERE, "Can't load config!", ioex);
         }
@@ -37,27 +39,17 @@ public class Configuration {
 
     public void save() {
         try {
-            this.properties.store(new FileOutputStream(this.file), "BackupPlugin Config File");
+            final FileOutputStream out = new FileOutputStream(this.file);
+            try {
+                this.properties.store(out, "BackupPlugin Config File");
+            } catch (IOException ioex) {
+                MessageHandler.log(Level.SEVERE, "Can't save config!", ioex);
+            } finally {
+                out.close();
+            }
         } catch (IOException ioex) {
             MessageHandler.log(Level.SEVERE, "Can't save config!", ioex);
         }
-    }
-
-    public Map<String, String> returnMap() throws FileNotFoundException, IOException {
-        Map<String, String> map = new HashMap<String, String>();
-        BufferedReader reader = new BufferedReader(new FileReader(this.file));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if ((line.trim().length() == 0) || (line.charAt(0) == '#')) {
-                continue;
-            }
-            int delimPosition = line.indexOf('=');
-            String key = line.substring(0, delimPosition).trim();
-            String value = line.substring(delimPosition + 1).trim();
-            map.put(key, value);
-        }
-        reader.close();
-        return map;
     }
 
     public void removeKey(String key) {
