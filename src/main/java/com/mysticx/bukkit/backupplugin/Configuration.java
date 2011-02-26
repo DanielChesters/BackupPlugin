@@ -24,7 +24,7 @@ public class Configuration {
         }
     }
 
-    public void load() {
+    final public void load() {
         try {
             final FileInputStream inStream = new FileInputStream(this.file);
             try {
@@ -39,7 +39,7 @@ public class Configuration {
         }
     }
 
-    public void save() {
+    final public void save() {
         try {
             final FileOutputStream out = new FileOutputStream(this.file);
             try {
