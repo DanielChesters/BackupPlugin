@@ -67,7 +67,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @return name of PluginUnit
      */
-    public String getName() {
+    public final String getName() {
         return this.name;
     }
 
@@ -76,7 +76,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @param folder
      */
-    public void setWorkDir(File workPath) {
+    public final void setWorkDir(File workPath) {
         this.workPath = workPath;
     }
 
@@ -84,7 +84,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @return working directory
      */
-    protected File getWorkDir() {
+    protected final File getWorkDir() {
         return workPath;
     }
 
@@ -96,7 +96,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @return elapsed time in seconds
      */
-    protected int calculateTimeDifference(long start, long end) {
+    protected final int calculateTimeDifference(long start, long end) {
         Long time = (end - start) / 1000;
         return time.intValue();
     }
@@ -107,7 +107,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * @param suffix
      * @return the filename
      */
-    public String generateFilename(String suffix) {
+    public final String generateFilename(String suffix) {
         // generate filename
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmssSSSS");
         String time = sdf.format(new Date(System.currentTimeMillis()));
@@ -124,7 +124,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @return true if the unit is enabled
      */
-    public boolean isEnabled() {
+    public final boolean isEnabled() {
         return this.isEnabled;
     }
 
@@ -132,7 +132,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @return true if the unit is forced
      */
-    public boolean isForce() {
+    public final boolean isForce() {
         return this.isForce;
     }
 
@@ -141,7 +141,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @param bool
      */
-    public void setEnabled(boolean bool) {
+    public final void setEnabled(boolean bool) {
         this.isEnabled = bool;
         if (bool) {
             notifyAll();
@@ -153,14 +153,14 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @param bool
      */
-    public void setForce(boolean bool) {
+    public final void setForce(boolean bool) {
         this.isForce = bool;
     }
 
     /**
      * do nothing
      */
-    protected void sleepaWhile(long millis) {
+    protected final void sleepaWhile(long millis) {
         try {
             MessageHandler.log(Level.FINE, getName() + " going to sleep for " + (millis / 1000) + " seconds..");
             Thread.sleep(millis);
@@ -174,7 +174,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * Saves the world and disables saving! Remember to enable saving again
      * afterwards
      */
-    protected void saveWorld() {
+    protected final void saveWorld() {
         // TODO: save world and disable saving for mapping process
         // etc.getServer().useConsoleCommand("save-on"); // Ensures that saving
         // is enabled
@@ -187,7 +187,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
     /**
      * resets force to initial value
      */
-    public void resetForce() {
+    public final void resetForce() {
         MessageHandler.log(Level.FINE, "Resetting force to " + this.initialForce);
         this.isForce = this.initialForce;
     }
@@ -203,7 +203,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      *
      * @param force
      */
-    public void run(boolean force) {
+    public final void run(boolean force) {
         boolean oldforce = isForce();
         setForce(force);
         run();
