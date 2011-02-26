@@ -276,15 +276,15 @@ public class CacheControl {
     public boolean persistCache(File outputFile, boolean force) {
         MessageHandler.log(Level.FINE, "Persisting cache / creating zip file..");
         try {
-            File cache = this.getCache(force);
+            File currentCache = this.getCache(force);
             MessageHandler.log(Level.FINEST, "persistCache() got cache, obtaining lock..");
             lock.lock();
             MessageHandler.log(Level.FINEST, "persistCache() got lock, starting zip operation..");
-            iohelper.zipDirectory(cache, outputFile);
+            iohelper.zipDirectory(currentCache, outputFile);
             MessageHandler.log(Level.FINEST, "persistCache() finished zip operation..");
 
             if (cacheHistory > 0) {
-                iohelper.deleteOldFiles(cache.getParentFile(), this.world.getName(), cacheHistory);
+                iohelper.deleteOldFiles(currentCache.getParentFile(), this.world.getName(), cacheHistory);
             }
             return true;
         } catch (IOException e) {
