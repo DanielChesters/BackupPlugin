@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -124,7 +125,7 @@ public class SysCommandExecutor {
 
     private String[] getEnvTokens() {
         if (fEnvironmentVarList == null) {
-            return null;
+            return new String[0];
         }
 
         String[] envTokenArray = new String[fEnvironmentVarList.size()];
