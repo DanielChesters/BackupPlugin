@@ -134,7 +134,8 @@ public class MessageHandler {
      * @return modified String
      */
     private static String addPrefix(String message) {
-        return PLUGIN_PREFIX + "(" + getCallingClassName(4) + ") " + message;
+        //return PLUGIN_PREFIX + "(" + getCallingClassName(4) + ") " + message;
+        return PLUGIN_PREFIX + " " + message;
     }
 
     /**
