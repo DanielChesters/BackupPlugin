@@ -191,7 +191,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
      * @see org.bukkit.plugin.Plugin#onDisable()
      */
     public void onDisable() {
-        System.out.println("BackupPlugin disabled!");
+        MessageHandler.log(Level.INFO, "BackupPlugin disabled!");
     }
 
     /**
