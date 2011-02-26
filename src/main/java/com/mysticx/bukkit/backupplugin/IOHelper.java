@@ -40,7 +40,7 @@ class IOHelper {
     }
 
     // Buffer size for zipping
-    public static int BUFFER = 8192;
+    private final static int BUFFER = 8192;
 
     /**
      * Zips given directory
@@ -242,7 +242,7 @@ class IOHelper {
 
 class BackupFilter implements FilenameFilter {
 
-    String world;
+    private String world;
 
     public BackupFilter(String world) {
         super();

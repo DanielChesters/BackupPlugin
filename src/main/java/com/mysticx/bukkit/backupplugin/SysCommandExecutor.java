@@ -132,7 +132,7 @@ public class SysCommandExecutor {
         int nEnvVarIndex = 0;
         while (envVarIter.hasNext()) {
             EnvironmentVar envVar = (EnvironmentVar) (envVarIter.next());
-            String envVarToken = envVar.fName + "=" + envVar.fValue;
+            String envVarToken = envVar.getfName() + "=" + envVar.getfValue();
             envTokenArray[nEnvVarIndex++] = envVarToken;
         }
 
@@ -147,11 +147,19 @@ public class SysCommandExecutor {
  *
  */
 class EnvironmentVar {
-    public String fName = null;
-    public String fValue = null;
+    private String fName = null;
+    private String fValue = null;
 
     public EnvironmentVar(String name, String value) {
         fName = name;
         fValue = value;
+    }
+
+    public String getfName() {
+        return fName;
+    }
+
+    public String getfValue() {
+        return fValue;
     }
 }

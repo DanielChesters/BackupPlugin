@@ -23,7 +23,7 @@ import java.util.logging.Level;
 public class CacheControl {
 
     // singleton
-    public static CacheControl cc;
+    private final static CacheControl cc = new CacheControl();;
 
     /**
      * Cache cleanup task for timer
@@ -73,9 +73,6 @@ public class CacheControl {
      * @return instance of CacheControl
      */
     public static CacheControl getInstance() {
-        if (cc == null) {
-            cc = new CacheControl();
-        }
         return cc;
     }
 

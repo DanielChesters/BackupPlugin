@@ -313,7 +313,7 @@ public class BackupPlugin extends JavaPlugin implements Observer {
     }
 
     // authorized users go in here
-    List<String> authorizedUsers = new ArrayList<String>();
+    private List<String> authorizedUsers = new ArrayList<String>();
 
     /**
      * checks if an user is authorized to use ingame commands
