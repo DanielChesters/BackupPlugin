@@ -57,8 +57,9 @@ public class SysCommandExecutor {
     }
 
     public void setEnvironmentVar(String name, String value) {
-        if (fEnvironmentVarList == null)
+        if (fEnvironmentVarList == null) {
             fEnvironmentVarList = new ArrayList<EnvironmentVar>();
+        }
 
         fEnvironmentVarList.add(new EnvironmentVar(name, value));
     }
@@ -96,10 +97,12 @@ public class SysCommandExecutor {
 
     private Process runCommandHelper(String commandLine) throws IOException {
         Process process = null;
-        if (fWorkingDirectory == null)
+        if (fWorkingDirectory == null) {
             process = Runtime.getRuntime().exec(commandLine, getEnvTokens());
-        else
+        }
+        else {
             process = Runtime.getRuntime().exec(commandLine, getEnvTokens(), new File(fWorkingDirectory));
+        }
 
         return process;
     }
@@ -120,8 +123,9 @@ public class SysCommandExecutor {
     }
 
     private String[] getEnvTokens() {
-        if (fEnvironmentVarList == null)
+        if (fEnvironmentVarList == null) {
             return null;
+        }
 
         String[] envTokenArray = new String[fEnvironmentVarList.size()];
         Iterator<EnvironmentVar> envVarIter = fEnvironmentVarList.iterator();

@@ -122,8 +122,9 @@ public class MapperUnit extends PluginUnit {
             map_parameters = map_parameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
             map_parameters = map_parameters.replace("$w", inputFolder.getAbsolutePath());
 
-            if (map_parameters.contains("$m"))
+            if (map_parameters.contains("$m")) {
                 map_parameters = map_parameters.replace("$m", mapper_path.getParent());
+            }
 
             MessageHandler.log(Level.FINE, "Mapper usage: " + mapper_path + " " + map_parameters);
 

@@ -227,8 +227,9 @@ public class BackupPlugin extends JavaPlugin implements Observer {
      * @throws ParseException
      */
     private long calcNextPointOfTime(String time, String pattern, long period) throws ParseException {
-        if (period <= 0)
+        if (period <= 0) {
             return 0;
+        }
 
         DateFormat df = new SimpleDateFormat(pattern);
         df.setLenient(true);

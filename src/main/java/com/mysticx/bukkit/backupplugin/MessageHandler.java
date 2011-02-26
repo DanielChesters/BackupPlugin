@@ -35,8 +35,9 @@ public class MessageHandler {
      * @param thrown
      */
     protected static void log(Level level, String message, Throwable thrown) {
-        if (compareLevel(level))
+        if (compareLevel(level)) {
             l.log(level, addPrefix(message), thrown);
+        }
     }
 
     /**
@@ -47,11 +48,13 @@ public class MessageHandler {
      */
     protected static void log(Level level, String message) {
         // TODO quick hack for output < INFO
-        if ((level == Level.FINE || level == Level.FINEST) && compareLevel(level))
+        if ((level == Level.FINE || level == Level.FINEST) && compareLevel(level)) {
             l.log(Level.INFO, addPrefix("[DEBUG] " + message));
+        }
 
-        if (compareLevel(level))
+        if (compareLevel(level)) {
             l.log(level, addPrefix(message));
+        }
     }
 
     /**
@@ -60,8 +63,9 @@ public class MessageHandler {
      * @param message
      */
     protected static void info(String message) {
-        if (compareLevel(Level.INFO))
+        if (compareLevel(Level.INFO)) {
             l.info(addPrefix(message));
+        }
     }
 
     /**
@@ -70,8 +74,9 @@ public class MessageHandler {
      * @param message
      */
     protected static void warning(String message) {
-        if (compareLevel(Level.WARNING))
+        if (compareLevel(Level.WARNING)) {
             l.warning(addPrefix(message));
+        }
     }
 
     /**

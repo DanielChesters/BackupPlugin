@@ -143,8 +143,9 @@ public abstract class PluginUnit extends Observable implements Runnable {
      */
     public void setEnabled(boolean bool) {
         this.isEnabled = bool;
-        if (bool)
+        if (bool) {
             notifyAll();
+        }
     }
 
     /**

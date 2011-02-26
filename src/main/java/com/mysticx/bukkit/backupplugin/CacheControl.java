@@ -181,8 +181,9 @@ public class CacheControl {
      */
     private boolean deleteCache() {
 
-        if (!cache.exists())
+        if (!cache.exists()) {
             return true;
+        }
 
         MessageHandler.log(Level.FINEST, "deleteCache() obtaining lock..");
         lock.lock();
@@ -282,8 +283,9 @@ public class CacheControl {
             iohelper.zipDirectory(cache, outputFile);
             MessageHandler.log(Level.FINEST, "persistCache() finished zip operation..");
 
-            if (cache_history > 0)
+            if (cache_history > 0) {
                 iohelper.deleteOldFiles(cache.getParentFile(), this.world.getName(), cache_history);
+            }
             return true;
         } catch (IOException e) {
             MessageHandler.log(Level.SEVERE, "Error while zipping temp folder!", e);

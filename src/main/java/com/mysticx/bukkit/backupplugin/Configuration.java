@@ -16,10 +16,12 @@ public class Configuration {
         this.properties = new Properties();
         this.file = new File(dataFolder, name);
 
-        if (file.exists())
+        if (file.exists()) {
             load();
-        else
+        }
+        else {
             save();
+        }
     }
 
     public void load() {
