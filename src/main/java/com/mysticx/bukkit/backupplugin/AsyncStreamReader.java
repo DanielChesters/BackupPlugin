@@ -43,7 +43,7 @@ class AsyncStreamReader extends Thread {
         BufferedReader bufOut = new BufferedReader(new InputStreamReader(fInputStream));
         String line = null;
         while ((fStop) && ((line = bufOut.readLine()) != null)) {
-            fBuffer.append(line + fNewLine);
+            fBuffer.append(line).append(fNewLine);
             printToDisplayDevice(line);
         }
         bufOut.close();
