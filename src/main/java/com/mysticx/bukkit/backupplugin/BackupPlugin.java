@@ -337,33 +337,27 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         String commandName = cmd.getName().toLowerCase();
+        String name;
         if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if ("backup".equals(commandName) && canUseCommand(player, "BackupPlugin.backup")) {
-                return backup(args, player.getName());
-            } else if ("map".equals(commandName) && canUseCommand(player, "BackupPlugin.map")) {
-                return map(args, player.getName());
-            } else if ("breload".equals(commandName) && canUseCommand(player, "BackupPlugin.admin")) {
-                return reload(player.getName());
-            } else if ("loglevel".equals(commandName) && canUseCommand(player, "BackupPlugin.admin")) {
-                return loglevel(args, player.getName(), player);
-            }
-        } else if (sender instanceof ConsoleCommandSender) {
-            String name = "An Administrator";
-            if ("backup".equals(commandName)) {
-                return backup(args, name);
-            } else if ("map".equals(commandName)) {
-                return map(args, name);
-            } else if ("breload".equals(commandName)) {
-                return reload(name);
-            } else if ("loglevel".equals(commandName)) {
-                return loglevel(args, name, null);
-            }
+            name = ((Player) sender).getName();
+        } else {
+            name = "An Administrator";
         }
+
+        if ("backup".equals(commandName) && canUseCommand(sender, "BackupPlugin.backup")) {
+            return backup(args, name);
+        } else if ("map".equals(commandName) && canUseCommand(sender, "BackupPlugin.map")) {
+            return map(args, name);
+        } else if ("breload".equals(commandName) && canUseCommand(sender, "BackupPlugin.admin")) {
+            return reload(name);
+        } else if ("loglevel".equals(commandName) && canUseCommand(sender, "BackupPlugin.admin")) {
+            return loglevel(args, name, sender);
+        }
+
         return true;
     }
 
-    private boolean loglevel(String[] args, String name, Player player) {
+    private boolean loglevel(String[] args, String name, CommandSender sender) {
         if (args.length == 1) {
             MessageHandler.info(name + " is changing log level to " + args[0]);
             String message;
@@ -372,10 +366,10 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
             } else {
                 message = "Failed!";
             }
-            if (player == null) {
-                MessageHandler.info(message);
+            if (sender instanceof Player) {
+                ((Player) sender).sendMessage(message);
             } else {
-                player.sendMessage(message);
+                MessageHandler.info(message);
             }
             return true;
         } else {
@@ -435,13 +429,19 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
      * @param permission
      * @return
      */
-    private boolean canUseCommand(Player player, String permission) {
-        // check for Permissions
-        if (permissions != null) {
-            return permissions.getHandler().permission(player, permission);
-        // no Permissions
+    private boolean canUseCommand(CommandSender sender, String permission) {
+
+        if (sender instanceof Player){
+            // check for Permissions
+            final Player player = (Player) sender;
+            if (permissions != null) {
+                return permissions.getHandler().permission(player, permission);
+            // no Permissions
+            } else {
+                return this.isAuthorized(player.getName());
+            }
         } else {
-            return this.isAuthorized(player.getName());
+            return true;
         }
     }
 }
