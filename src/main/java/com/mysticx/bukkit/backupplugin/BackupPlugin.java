@@ -137,7 +137,7 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
 
         // init cache
         this.cc = CacheControl.getInstance();
-        this.cc.setWorld(world);
+        this.cc.addWorld(world);
         this.cc.setTimeUnit(timeunit);
         this.cc.setCacheLifetime(cacheLifetime);
         this.cc.setTempDir(new File(tempdir));

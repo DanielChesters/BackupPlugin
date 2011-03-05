@@ -107,15 +107,14 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * @param suffix
      * @return the filename
      */
-    public final String generateFilename(String suffix) {
+    public final String generateFilename(String suffix, String worldname) {
         // generate filename
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmssSSSS");
         String time = sdf.format(new Date(System.currentTimeMillis()));
 
         // escape spaces in world name
-        String worldname = cc.getWorld().getName().replaceAll(" ", "");
 
-        String filename = (worldname + "_" + time + suffix);
+        String filename = (worldname.replaceAll(" ", "") + "_" + time + suffix);
         MessageHandler.log(Level.FINEST, "Generated filename: " + filename);
         return filename;
     }

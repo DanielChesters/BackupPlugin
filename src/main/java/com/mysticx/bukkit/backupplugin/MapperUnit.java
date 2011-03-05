@@ -90,18 +90,6 @@ public final class MapperUnit extends PluginUnit {
         // save world and disable saving for mapping process
         saveWorld();
 
-        File inputFolder = null;
-
-        try {
-            // retrieve cache
-            inputFolder = cc.getCache(this.isForce());
-        } catch (Exception e) {
-            MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
-            return;
-        } finally {
-            ConsoleHelper.queueConsoleCommand(etc, "save-on");
-        }
-
         // create folders
         if (!this.getWorkDir().exists()) {
             this.getWorkDir().mkdirs();
@@ -111,37 +99,48 @@ public final class MapperUnit extends PluginUnit {
         cc.getLock().lock();
         MessageHandler.log(Level.FINEST, "got lock, starting map generation");
 
-        // do mappings
-        for (int i = 0; i < mapOptions.length; i++) {
-            MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
-
-            // modify parameters
-            String filename = generateFilename(".png");
-            String mapParameters = mapOptions[i];
-            mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
-            mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
-
-            if (mapParameters.contains("$m")) {
-                mapParameters = mapParameters.replace("$m", mapperPath.getParent());
+        for (String worldname : cc.getWorlds()) {
+            File inputFolder = null;
+            try {
+                // retrieve cache
+                inputFolder = cc.getCache(worldname, this.isForce());
+            } catch (Exception e) {
+                MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
+                return;
+            } finally {
+                ConsoleHelper.queueConsoleCommand(etc, "save-on");
             }
+            // do mappings
+            for (int i = 0; i < mapOptions.length; i++) {
+                MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
 
-            MessageHandler.log(Level.FINE, "Mapper usage: " + mapperPath + " " + mapParameters);
+                // modify parameters
+                String filename = generateFilename(worldname, ".png");
+                String mapParameters = mapOptions[i];
+                mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
+                mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
 
-            // generate maps
-            executeExternal(mapperPath, mapParameters);
-
-            // save latest.png at first run
-            if (i == 0 && useLatest) {
-                try {
-                    iohelper.deleteFile(new File(this.getWorkDir(), "latest.png"));
-                    iohelper.copyFile(new File(this.getWorkDir(), filename), new File(this.getWorkDir(), "latest.png"), false);
-                } catch (IOException e) {
-                    MessageHandler.log(Level.WARNING, "Creating latest.png failed: ", e);
+                if (mapParameters.contains("$m")) {
+                    mapParameters = mapParameters.replace("$m", mapperPath.getParent());
                 }
 
+                MessageHandler.log(Level.FINE, "Mapper usage: " + mapperPath + " " + mapParameters);
+
+                // generate maps
+                executeExternal(mapperPath, mapParameters);
+
+                // save latest.png at first run
+                if (i == 0 && useLatest) {
+                    try {
+                        iohelper.deleteFile(new File(this.getWorkDir(), "latest.png"));
+                        iohelper.copyFile(new File(this.getWorkDir(), filename), new File(this.getWorkDir(), "latest.png"), false);
+                    } catch (IOException e) {
+                        MessageHandler.log(Level.WARNING, "Creating latest.png failed: ", e);
+                    }
+
+                }
             }
         }
-
         MessageHandler.info("Mapping process finished.");
         cc.getLock().unlock();
 

@@ -53,15 +53,15 @@ public final class BackupUnit extends PluginUnit {
         saveWorld();
 
         try {
-            // generate filename
-            String filename = generateFilename(".zip");
-
-            File outputFile = new File(this.getWorkDir(), filename);
-
-            if (cc.persistCache(outputFile, this.isForce())) {
-                MessageHandler.log(Level.INFO, "Backup sucessfull");
-            } else {
-                MessageHandler.log(Level.WARNING, "Backup failed");
+            for (String worldname : cc.getWorlds()) {
+                // generate filename
+                String filename = generateFilename(worldname, ".zip");
+                File outputFile = new File(this.getWorkDir(), filename);
+                if (cc.persistCache(worldname, outputFile, this.isForce())) {
+                    MessageHandler.log(Level.INFO, String.format("Backup (%s) sucessfull", worldname));
+                } else {
+                    MessageHandler.log(Level.WARNING, String.format("Backup (%s) failed", worldname));
+                }
             }
         } catch (Exception e) {
             MessageHandler.log(Level.SEVERE, "Error during backup: ", e);
