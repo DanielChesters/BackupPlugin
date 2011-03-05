@@ -134,10 +134,11 @@ public final class MapperUnit extends PluginUnit {
                 // save latest.png at first run
                 if (i == 0 && useLatest) {
                     try {
-                        iohelper.deleteFile(new File(this.getWorkDir(), "latest.png"));
-                        iohelper.copyFile(new File(this.getWorkDir(), filename), new File(this.getWorkDir(), "latest.png"), false);
+                        final String worldnameEscaped = worldname.replaceAll(" ", "");
+                        iohelper.deleteFile(new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)));
+                        iohelper.copyFile(new File(this.getWorkDir(), filename), new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)), false);
                     } catch (IOException e) {
-                        MessageHandler.log(Level.WARNING, "Creating latest.png failed: ", e);
+                        MessageHandler.log(Level.WARNING, String.format("Creating latest-%s.png failed: ", worldnameEscaped), e);
                     }
 
                 }
