@@ -42,7 +42,7 @@ class AsyncStreamReader extends Thread {
     private void readCommandOutput() throws IOException {
         BufferedReader bufOut = new BufferedReader(new InputStreamReader(fInputStream));
         String line = null;
-        while ((fStop) && ((line = bufOut.readLine()) != null)) {
+        while ((!fStop) && ((line = bufOut.readLine()) != null)) {
             fBuffer.append(line).append(fNewLine);
             printToDisplayDevice(line);
         }
