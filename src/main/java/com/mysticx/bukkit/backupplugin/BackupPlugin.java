@@ -241,11 +241,14 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
 
         long nextRun = calendar.getTimeInMillis();
 
+        int addPeriod = 0;
         while (nextRun < System.currentTimeMillis()) {
-            MessageHandler.log(Level.FINEST, "Date is in the past, adding some  minutes: " + period / 1000 / 60);
             nextRun += period;
+            addPeriod++;
         }
-
+        if (addPeriod > 0) {
+            MessageHandler.log(Level.FINEST, "( " + addPeriod + " times) Date is in the past, adding some minutes: " + period / 1000 / 60);
+        }
         return nextRun;
     }
 
