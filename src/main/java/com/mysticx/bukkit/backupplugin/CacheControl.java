@@ -178,7 +178,7 @@ public final class CacheControl {
      * @return true, if cache is too old
      */
     private boolean isCacheObsolete(String worldname) {
-        File cache = new File(cacheRoot,worldname);
+        File cache = new File(cacheRoot, worldname);
         return (!cache.exists() || (System.currentTimeMillis() - cache.lastModified()) > tu.toMillis(this.cacheLifetime));
     }
 
@@ -229,10 +229,11 @@ public final class CacheControl {
      * @return cache
      */
     public synchronized File getCache(String worldname, boolean force) {
+        File cache = new File(cacheRoot, worldname);
         // return existing cache
         if (!force && !isCacheObsolete(worldname)) {
             MessageHandler.log(Level.FINEST, "Cache still up to date!");
-            return cacheRoot;
+            return cache;
         } else {
             // cancel timer
             if (timer != null) {
@@ -242,7 +243,7 @@ public final class CacheControl {
             if (rebuildCache(worldname)) {
                 // setup timer
                 scheduleTimer();
-                return cacheRoot;
+                return cache;
             } else {
                 MessageHandler.log(Level.WARNING, "Cache couldn't be rebuilt!");
                 return null;
