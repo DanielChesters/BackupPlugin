@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.Server;
-import org.bukkit.World;
 
 /**
  * Backup Plugin
@@ -88,39 +87,35 @@ public final class MapperUnit extends PluginUnit {
 
         MessageHandler.log(Level.INFO, "Starting map generation process.. this could take a while!");
 
-        server.savePlayers();
+        // save world and disable saving for mapping process
+        saveWorld();
 
-        final String worldname = this.getWorkDir().getName();
-        final World world = server.getWorld(worldname);
+        // create folders
+        if (!this.getWorkDir().exists()) {
+            this.getWorkDir().mkdirs();
+        }
 
-        if (world == null) {
-            MessageHandler.warning(String.format("World %s don't exist", worldname));
-        } else {
-            world.save();
+        // lock cache while generating maps
+        cc.getLock().lock();
+        MessageHandler.log(Level.FINEST, "got lock, starting map generation");
+
+        for (String worldname : cc.getWorlds()) {
             File inputFolder = null;
             try {
                 // retrieve cache
-                inputFolder = cc.getCache(this.isForce());
+                inputFolder = cc.getCache(worldname, this.isForce());
             } catch (Exception e) {
                 MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
                 return;
+            } finally {
+                ConsoleHelper.queueConsoleCommand(etc, "save-on");
             }
-
-            // create folders
-            if (!this.getWorkDir().exists()) {
-                this.getWorkDir().mkdirs();
-            }
-
-            // lock cache while generating maps
-            cc.getLock().lock();
-            MessageHandler.log(Level.FINEST, "got lock, starting map generation");
-
             // do mappings
             for (int i = 0; i < mapOptions.length; i++) {
                 MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
 
                 // modify parameters
-                String filename = generateFilename(".png");
+                String filename = generateFilename(worldname, ".png");
                 String mapParameters = mapOptions[i];
                 mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
                 mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
@@ -145,13 +140,12 @@ public final class MapperUnit extends PluginUnit {
 
                 }
             }
-
-            MessageHandler.info("Mapping process finished.");
-            cc.getLock().unlock();
-
-            setChanged();
-            notifyObservers();
         }
+        MessageHandler.info("Mapping process finished.");
+        cc.getLock().unlock();
+
+        setChanged();
+        notifyObservers();
     }
 
     /**

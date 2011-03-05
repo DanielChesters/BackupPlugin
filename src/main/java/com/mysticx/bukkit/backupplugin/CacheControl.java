@@ -3,6 +3,7 @@ package com.mysticx.bukkit.backupplugin;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +38,7 @@ public final class CacheControl {
 
         @Override
         public void run() {
-            deleteCache();
+            deleteAllCache();
             timer.cancel();
             MessageHandler.log(Level.INFO, "Cache lifetime ended.");
         }
@@ -47,7 +48,7 @@ public final class CacheControl {
     // helper stuff
     private IOHelper iohelper;
     private File cacheRoot;
-    private File world;
+    //private File world;
     private ConcurrentMap<String, File> worlds;
 
     // cache lifetime
@@ -63,13 +64,19 @@ public final class CacheControl {
     private CacheControl() {
         this.iohelper = IOHelper.getInstance();
         this.cacheRoot = null;
-        this.world = null;
         this.tu = TimeUnit.MINUTES;
         this.cacheLifetime = 30;
         this.cacheHistory = 5;
         this.timer = new Timer();
         this.lock = new ReentrantLock();
         this.worlds = new ConcurrentHashMap<String, File>();
+    }
+
+    public void deleteAllCache() {
+        for(String worldname:worlds.keySet()){
+            deleteCache(worldname);
+        }
+
     }
 
     /**
@@ -113,19 +120,27 @@ public final class CacheControl {
     }
 
     /**
-     * Sets world name and path
+     * Add world name and path
      *
      * @param worldname
      */
-    public void setWorld(String worldname) {
-        this.world = new File(worldname);
+    public void addWorld(String worldname) {
+        worlds.putIfAbsent(worldname, new File(worldname));
+
     }
 
     /**
      * @return file object representing the current world
      */
-    public File getWorld() {
-        return world;
+    public File getWorld(String worldname) {
+        return worlds.get(worldname);
+    }
+
+    /**
+     * @return file object representing the current world
+     */
+    public Set<String> getWorlds() {
+        return worlds.keySet();
     }
 
     /**
@@ -162,8 +177,9 @@ public final class CacheControl {
      *
      * @return true, if cache is too old
      */
-    private boolean isCacheObsolete() {
-        return (!this.cacheRoot.exists() || (System.currentTimeMillis() - this.cacheRoot.lastModified()) > tu.toMillis(this.cacheLifetime));
+    private boolean isCacheObsolete(String worldname) {
+        File cache = new File(cacheRoot,worldname);
+        return (!cache.exists() || (System.currentTimeMillis() - cache.lastModified()) > tu.toMillis(this.cacheLifetime));
     }
 
     /**
@@ -180,9 +196,11 @@ public final class CacheControl {
      *
      * @return true if successful
      */
-    private boolean deleteCache() {
+    private boolean deleteCache(String worldname) {
 
-        if (!cacheRoot.exists()) {
+        File cache = new File(cacheRoot, worldname);
+
+        if (!cache.exists()) {
             return true;
         }
 
@@ -191,7 +209,7 @@ public final class CacheControl {
         MessageHandler.log(Level.INFO, "Deleting cache, might be obsolete.");
 
         try {
-            if (!iohelper.deleteDirectory(cacheRoot)) {
+            if (!iohelper.deleteDirectory(cache)) {
                 MessageHandler.log(Level.WARNING, "Failed to delete temp folder.");
                 return false;
             }
@@ -210,9 +228,9 @@ public final class CacheControl {
      *            initializes cache rebuild
      * @return cache
      */
-    public synchronized File getCache(boolean force) {
+    public synchronized File getCache(String worldname, boolean force) {
         // return existing cache
-        if (!force && !isCacheObsolete()) {
+        if (!force && !isCacheObsolete(worldname)) {
             MessageHandler.log(Level.FINEST, "Cache still up to date!");
             return cacheRoot;
         } else {
@@ -221,7 +239,7 @@ public final class CacheControl {
                 timer.cancel();
             }
             // rebuild cache
-            if (rebuildCache()) {
+            if (rebuildCache(worldname)) {
                 // setup timer
                 scheduleTimer();
                 return cacheRoot;
@@ -237,7 +255,10 @@ public final class CacheControl {
      *
      * @return Cache
      */
-    private boolean rebuildCache() {
+    private boolean rebuildCache(String worldname) {
+
+        File world = worlds.get(worldname);
+        File cache = new File(cacheRoot, worldname);
         // check if world exists
         if (!world.exists()) {
             MessageHandler.log(Level.WARNING, "World path doesn't exist!");
@@ -246,7 +267,7 @@ public final class CacheControl {
 
         MessageHandler.log(Level.INFO, "Rebuilding Cache. This can take several minutes, depending on the world size.");
 
-        if (cacheRoot.exists() && !deleteCache()) {
+        if (cache.exists() && !deleteCache(worldname)) {
             return false;
         }
 
@@ -255,7 +276,7 @@ public final class CacheControl {
             lock.lock();
             MessageHandler.log(Level.FINEST, "rebuildCache() got lock, copy dir..");
             // copy world to temp/cache
-            iohelper.copyDir(world, cacheRoot);
+            iohelper.copyDir(world, cache);
         } catch (FileNotFoundException e) {
             MessageHandler.log(Level.SEVERE, "Error rebuilding cache: ", e);
             return false;
@@ -274,10 +295,10 @@ public final class CacheControl {
     /**
      * Persists cache to zip
      */
-    public boolean persistCache(File outputFile, boolean force) {
+    public boolean persistCache(String worldname, File outputFile, boolean force) {
         MessageHandler.log(Level.FINE, "Persisting cache / creating zip file..");
         try {
-            File currentCache = this.getCache(force);
+            File currentCache = this.getCache(worldname, force);
             MessageHandler.log(Level.FINEST, "persistCache() got cache, obtaining lock..");
             lock.lock();
             MessageHandler.log(Level.FINEST, "persistCache() got lock, starting zip operation..");
@@ -285,7 +306,7 @@ public final class CacheControl {
             MessageHandler.log(Level.FINEST, "persistCache() finished zip operation..");
 
             if (cacheHistory > 0) {
-                iohelper.deleteOldFiles(currentCache.getParentFile(), this.world.getName(), cacheHistory);
+                iohelper.deleteOldFiles(currentCache.getParentFile(), worldname, cacheHistory);
             }
             return true;
         } catch (IOException e) {

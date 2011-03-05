@@ -20,7 +20,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
 
     // Objects
     protected CacheControl cc;
-    protected Server server;
+    protected Server etc;
     protected IOHelper iohelper;
     protected File workPath;
 
@@ -37,7 +37,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      */
     public PluginUnit(Server instance, File workdir) {
         this.cc = CacheControl.getInstance();
-        this.server = instance;
+        this.etc = instance;
         this.iohelper = IOHelper.getInstance();
         this.isEnabled = true;
         this.isForce = false;
@@ -55,7 +55,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      */
     public PluginUnit(Server instance, File workdir, boolean force) {
         this.cc = CacheControl.getInstance();
-        this.server = instance;
+        this.etc = instance;
         this.iohelper = IOHelper.getInstance();
         this.isEnabled = true;
         this.isForce = force;
@@ -107,15 +107,14 @@ public abstract class PluginUnit extends Observable implements Runnable {
      * @param suffix
      * @return the filename
      */
-    public final String generateFilename(String suffix) {
+    public final String generateFilename(String suffix, String worldname) {
         // generate filename
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmssSSSS");
         String time = sdf.format(new Date(System.currentTimeMillis()));
 
         // escape spaces in world name
-        String worldname = cc.getWorld().getName().replaceAll(" ", "");
 
-        String filename = (worldname + "_" + time + suffix);
+        String filename = (worldname.replaceAll(" ", "") + "_" + time + suffix);
         MessageHandler.log(Level.FINEST, "Generated filename: " + filename);
         return filename;
     }
@@ -171,6 +170,16 @@ public abstract class PluginUnit extends Observable implements Runnable {
     }
 
     /**
+     * Saves the world and disables saving! Remember to enable saving again
+     * afterwards
+     */
+    protected final void saveWorld() {
+       ConsoleHelper.queueConsoleCommand(etc, "save-on");
+       ConsoleHelper.queueConsoleCommand(etc, "save-all");
+       ConsoleHelper.queueConsoleCommand(etc, "save-off");
+    }
+
+    /**
      * resets force to initial value
      */
     public final void resetForce() {
@@ -197,3 +206,4 @@ public abstract class PluginUnit extends Observable implements Runnable {
     }
 
 }
+
