@@ -44,7 +44,7 @@ public final class CacheControl {
 
     // helper stuff
     private IOHelper iohelper;
-    private File cache;
+    private File cacheRoot;
     private File world;
 
     // cache lifetime
@@ -59,7 +59,7 @@ public final class CacheControl {
      */
     private CacheControl() {
         this.iohelper = IOHelper.getInstance();
-        this.cache = null;
+        this.cacheRoot = null;
         this.world = null;
         this.tu = TimeUnit.MINUTES;
         this.cacheLifetime = 30;
@@ -105,7 +105,7 @@ public final class CacheControl {
      * @param tempdir
      */
     public void setTempDir(File tempdir) {
-        this.cache = tempdir;
+        this.cacheRoot = tempdir;
     }
 
     /**
@@ -159,7 +159,7 @@ public final class CacheControl {
      * @return true, if cache is too old
      */
     private boolean isCacheObsolete() {
-        return (!this.cache.exists() || (System.currentTimeMillis() - this.cache.lastModified()) > tu.toMillis(this.cacheLifetime));
+        return (!this.cacheRoot.exists() || (System.currentTimeMillis() - this.cacheRoot.lastModified()) > tu.toMillis(this.cacheLifetime));
     }
 
     /**
@@ -178,7 +178,7 @@ public final class CacheControl {
      */
     private boolean deleteCache() {
 
-        if (!cache.exists()) {
+        if (!cacheRoot.exists()) {
             return true;
         }
 
@@ -187,7 +187,7 @@ public final class CacheControl {
         MessageHandler.log(Level.INFO, "Deleting cache, might be obsolete.");
 
         try {
-            if (!iohelper.deleteDirectory(cache)) {
+            if (!iohelper.deleteDirectory(cacheRoot)) {
                 MessageHandler.log(Level.WARNING, "Failed to delete temp folder.");
                 return false;
             }
@@ -210,7 +210,7 @@ public final class CacheControl {
         // return existing cache
         if (!force && !isCacheObsolete()) {
             MessageHandler.log(Level.FINEST, "Cache still up to date!");
-            return cache;
+            return cacheRoot;
         } else {
             // cancel timer
             if (timer != null) {
@@ -220,7 +220,7 @@ public final class CacheControl {
             if (rebuildCache()) {
                 // setup timer
                 scheduleTimer();
-                return cache;
+                return cacheRoot;
             } else {
                 MessageHandler.log(Level.WARNING, "Cache couldn't be rebuilt!");
                 return null;
@@ -242,7 +242,7 @@ public final class CacheControl {
 
         MessageHandler.log(Level.INFO, "Rebuilding Cache. This can take several minutes, depending on the world size.");
 
-        if (cache.exists() && !deleteCache()) {
+        if (cacheRoot.exists() && !deleteCache()) {
             return false;
         }
 
@@ -251,7 +251,7 @@ public final class CacheControl {
             lock.lock();
             MessageHandler.log(Level.FINEST, "rebuildCache() got lock, copy dir..");
             // copy world to temp/cache
-            iohelper.copyDir(world, cache);
+            iohelper.copyDir(world, cacheRoot);
         } catch (FileNotFoundException e) {
             MessageHandler.log(Level.SEVERE, "Error rebuilding cache: ", e);
             return false;
