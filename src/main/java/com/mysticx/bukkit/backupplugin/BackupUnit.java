@@ -55,7 +55,7 @@ public final class BackupUnit extends PluginUnit {
         try {
             for (String worldname : cc.getWorlds()) {
                 // generate filename
-                String filename = generateFilename(worldname, ".zip");
+                String filename = generateFilename(".zip", worldname);
                 File outputFile = new File(this.getWorkDir(), filename);
                 if (cc.persistCache(worldname, outputFile, this.isForce())) {
                     MessageHandler.log(Level.INFO, String.format("Backup (%s) sucessfull", worldname));

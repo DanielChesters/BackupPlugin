@@ -117,7 +117,7 @@ public final class MapperUnit extends PluginUnit {
                 MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
 
                 // modify parameters
-                String filename = generateFilename(worldname, ".png");
+                String filename = generateFilename(".png", worldname);
                 String mapParameters = mapOptions[i];
                 mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
                 mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
@@ -133,8 +133,8 @@ public final class MapperUnit extends PluginUnit {
 
                 // save latest.png at first run
                 if (i == 0 && useLatest) {
+                    final String worldnameEscaped = worldname.replaceAll(" ", "");
                     try {
-                        final String worldnameEscaped = worldname.replaceAll(" ", "");
                         iohelper.deleteFile(new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)));
                         iohelper.copyFile(new File(this.getWorkDir(), filename), new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)), false);
                     } catch (IOException e) {
