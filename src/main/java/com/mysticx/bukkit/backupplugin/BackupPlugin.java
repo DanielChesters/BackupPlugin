@@ -247,7 +247,7 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
             addPeriod++;
         }
         if (addPeriod > 0) {
-            MessageHandler.log(Level.FINEST, "( " + addPeriod + " times) Date is in the past, adding some minutes: " + period / 1000 / 60);
+            MessageHandler.log(Level.FINEST, "(" + addPeriod + " times) Date is in the past, adding some minutes: " + period / 1000 / 60);
         }
         return nextRun;
     }
