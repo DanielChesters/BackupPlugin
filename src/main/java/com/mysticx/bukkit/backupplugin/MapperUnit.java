@@ -110,6 +110,8 @@ public final class MapperUnit extends PluginUnit {
             } finally {
                 ConsoleHelper.queueConsoleCommand(etc, "save-on");
             }
+
+            MessageHandler.info(String.format("Mapping world : %s...", worldname));
             // do mappings
             for (int i = 0; i < mapOptions.length; i++) {
                 MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
