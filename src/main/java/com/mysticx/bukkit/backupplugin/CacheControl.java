@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -46,6 +48,7 @@ public final class CacheControl {
     private IOHelper iohelper;
     private File cacheRoot;
     private File world;
+    private ConcurrentMap<String, File> worlds;
 
     // cache lifetime
     private int cacheLifetime;
@@ -66,6 +69,7 @@ public final class CacheControl {
         this.cacheHistory = 5;
         this.timer = new Timer();
         this.lock = new ReentrantLock();
+        this.worlds = new ConcurrentHashMap<String, File>();
     }
 
     /**
