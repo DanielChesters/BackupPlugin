@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 import org.bukkit.Server;
+import org.bukkit.World;
 
 /**
  * BackupPlugin
@@ -53,15 +54,21 @@ public final class BackupUnit extends PluginUnit {
 
         try {
             for (String worldname : cc.getWorlds()) {
-                etc.getWorld(worldname).save();
-                // generate filename
-                String filename = generateFilename(".zip", worldname);
-                File outputFile = new File(this.getWorkDir(), filename);
-                if (cc.persistCache(worldname, outputFile, this.isForce())) {
-                    MessageHandler.log(Level.INFO, String.format("Backup (%s) sucessfull", worldname));
+                final World world = etc.getWorld(worldname);
+                if (world == null) {
+                    MessageHandler.warning(String.format("World %s don't exist", worldname));
                 } else {
-                    MessageHandler.log(Level.WARNING, String.format("Backup (%s) failed", worldname));
+                    world.save();
+                    // generate filename
+                    String filename = generateFilename(".zip", worldname);
+                    File outputFile = new File(this.getWorkDir(), filename);
+                    if (cc.persistCache(worldname, outputFile, this.isForce())) {
+                        MessageHandler.log(Level.INFO, String.format("Backup (%s) sucessfull", worldname));
+                    } else {
+                        MessageHandler.log(Level.WARNING, String.format("Backup (%s) failed", worldname));
+                    }
                 }
+
             }
         } catch (Exception e) {
             MessageHandler.log(Level.SEVERE, "Error during backup: ", e);

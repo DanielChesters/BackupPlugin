@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.Server;
+import org.bukkit.World;
 
 /**
  * Backup Plugin
@@ -99,46 +100,50 @@ public final class MapperUnit extends PluginUnit {
         MessageHandler.log(Level.FINEST, "got lock, starting map generation");
 
         for (String worldname : cc.getWorlds()) {
-            etc.getWorld(worldname).save();
-            File inputFolder = null;
-            try {
-                // retrieve cache
-                inputFolder = cc.getCache(worldname, this.isForce());
-            } catch (Exception e) {
-                MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
-                return;
-            }
-
-            MessageHandler.info(String.format("Mapping world : %s...", worldname));
-            // do mappings
-            for (int i = 0; i < mapOptions.length; i++) {
-                MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
-
-                // modify parameters
-                String filename = generateFilename(".png", worldname);
-                String mapParameters = mapOptions[i];
-                mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
-                mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
-
-                if (mapParameters.contains("$m")) {
-                    mapParameters = mapParameters.replace("$m", mapperPath.getParent());
+            final World world = etc.getWorld(worldname);
+            if (world == null) {
+                MessageHandler.warning(String.format("World %s don't exist", worldname));
+            } else {
+                world.save();
+                File inputFolder = null;
+                try {
+                    // retrieve cache
+                    inputFolder = cc.getCache(worldname, this.isForce());
+                } catch (Exception e) {
+                    MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
+                    return;
                 }
+                MessageHandler.info(String.format("Mapping world : %s...", worldname));
+                // do mappings
+                for (int i = 0; i < mapOptions.length; i++) {
+                    MessageHandler.info("Mapping pass " + (i + 1) + " of " + mapOptions.length + "...");
 
-                MessageHandler.log(Level.FINE, "Mapper usage: " + mapperPath + " " + mapParameters);
+                    // modify parameters
+                    String filename = generateFilename(".png", worldname);
+                    String mapParameters = mapOptions[i];
+                    mapParameters = mapParameters.replace("$o", new File(this.getWorkDir(), filename).getAbsolutePath());
+                    mapParameters = mapParameters.replace("$w", inputFolder.getAbsolutePath());
 
-                // generate maps
-                executeExternal(mapperPath, mapParameters);
-
-                // save latest.png at first run
-                if (i == 0 && useLatest) {
-                    final String worldnameEscaped = worldname.replaceAll(" ", "");
-                    try {
-                        iohelper.deleteFile(new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)));
-                        iohelper.copyFile(new File(this.getWorkDir(), filename), new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)), false);
-                    } catch (IOException e) {
-                        MessageHandler.log(Level.WARNING, String.format("Creating latest-%s.png failed: ", worldnameEscaped), e);
+                    if (mapParameters.contains("$m")) {
+                        mapParameters = mapParameters.replace("$m", mapperPath.getParent());
                     }
 
+                    MessageHandler.log(Level.FINE, "Mapper usage: " + mapperPath + " " + mapParameters);
+
+                    // generate maps
+                    executeExternal(mapperPath, mapParameters);
+
+                    // save latest.png at first run
+                    if (i == 0 && useLatest) {
+                        final String worldnameEscaped = worldname.replaceAll(" ", "");
+                        try {
+                            iohelper.deleteFile(new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)));
+                            iohelper.copyFile(new File(this.getWorkDir(), filename), new File(this.getWorkDir(), String.format("latest-%s.png", worldnameEscaped)), false);
+                        } catch (IOException e) {
+                            MessageHandler.log(Level.WARNING, String.format("Creating latest-%s.png failed: ", worldnameEscaped), e);
+                        }
+
+                    }
                 }
             }
         }
