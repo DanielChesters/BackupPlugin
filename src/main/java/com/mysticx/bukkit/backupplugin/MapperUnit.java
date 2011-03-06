@@ -87,12 +87,12 @@ public final class MapperUnit extends PluginUnit {
 
         MessageHandler.log(Level.INFO, "Starting map generation process.. this could take a while!");
 
-        // save world and disable saving for mapping process
-        saveWorld();
+        etc.savePlayers();
 
         File inputFolder = null;
 
         try {
+            etc.getWorld(this.getWorkDir().getName()).save();
             // retrieve cache
             inputFolder = cc.getCache(this.isForce());
         } catch (Exception e) {
