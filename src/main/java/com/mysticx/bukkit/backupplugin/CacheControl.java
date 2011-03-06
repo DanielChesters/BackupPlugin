@@ -207,13 +207,7 @@ public final class CacheControl {
         File cache = new File(cacheRoot, worldname);
 
         if (!cache.exists()) {
-            if(cache.mkdirs()) {
-                return true;
-            } else {
-                MessageHandler.warning(String.format("Can't create %s cache folder", worldname));
-                return false;
-            }
-
+            return true;
         }
 
         MessageHandler.log(Level.FINEST, "deleteCache() obtaining lock..");
