@@ -87,8 +87,7 @@ public final class MapperUnit extends PluginUnit {
 
         MessageHandler.log(Level.INFO, "Starting map generation process.. this could take a while!");
 
-        // save world and disable saving for mapping process
-        saveWorld();
+        etc.savePlayers();
 
         // create folders
         if (!this.getWorkDir().exists()) {
@@ -100,6 +99,7 @@ public final class MapperUnit extends PluginUnit {
         MessageHandler.log(Level.FINEST, "got lock, starting map generation");
 
         for (String worldname : cc.getWorlds()) {
+            etc.getWorld(worldname).save();
             File inputFolder = null;
             try {
                 // retrieve cache
@@ -107,8 +107,6 @@ public final class MapperUnit extends PluginUnit {
             } catch (Exception e) {
                 MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
                 return;
-            } finally {
-                ConsoleHelper.queueConsoleCommand(etc, "save-on");
             }
 
             MessageHandler.info(String.format("Mapping world : %s...", worldname));
