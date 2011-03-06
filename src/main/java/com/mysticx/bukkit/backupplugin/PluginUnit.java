@@ -171,16 +171,6 @@ public abstract class PluginUnit extends Observable implements Runnable {
     }
 
     /**
-     * Saves the world and disables saving! Remember to enable saving again
-     * afterwards
-     */
-    protected final void saveWorld() {
-       ConsoleHelper.queueConsoleCommand(etc, "save-on");
-       ConsoleHelper.queueConsoleCommand(etc, "save-all");
-       ConsoleHelper.queueConsoleCommand(etc, "save-off");
-    }
-
-    /**
      * resets force to initial value
      */
     public final void resetForce() {
