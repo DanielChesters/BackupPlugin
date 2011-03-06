@@ -88,7 +88,7 @@ public final class MapperUnit extends PluginUnit {
 
         MessageHandler.log(Level.INFO, "Starting map generation process.. this could take a while!");
 
-        etc.savePlayers();
+        server.savePlayers();
 
         // create folders
         if (!this.getWorkDir().exists()) {
@@ -100,7 +100,7 @@ public final class MapperUnit extends PluginUnit {
         MessageHandler.log(Level.FINEST, "got lock, starting map generation");
 
         for (String worldname : cc.getWorlds()) {
-            final World world = etc.getWorld(worldname);
+            final World world = server.getWorld(worldname);
             if (world == null) {
                 MessageHandler.warning(String.format("World %s don't exist", worldname));
             } else {

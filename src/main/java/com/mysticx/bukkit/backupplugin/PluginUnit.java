@@ -20,7 +20,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
 
     // Objects
     protected CacheControl cc;
-    protected Server etc;
+    protected Server server;
     protected IOHelper iohelper;
     protected File workPath;
 
@@ -37,7 +37,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      */
     public PluginUnit(Server instance, File workdir) {
         this.cc = CacheControl.getInstance();
-        this.etc = instance;
+        this.server = instance;
         this.iohelper = IOHelper.getInstance();
         this.isEnabled = true;
         this.isForce = false;
@@ -55,7 +55,7 @@ public abstract class PluginUnit extends Observable implements Runnable {
      */
     public PluginUnit(Server instance, File workdir, boolean force) {
         this.cc = CacheControl.getInstance();
-        this.etc = instance;
+        this.server = instance;
         this.iohelper = IOHelper.getInstance();
         this.isEnabled = true;
         this.isForce = force;
@@ -170,16 +170,6 @@ public abstract class PluginUnit extends Observable implements Runnable {
     }
 
     /**
-     * Saves the world and disables saving! Remember to enable saving again
-     * afterwards
-     */
-    protected final void saveWorld() {
-       ConsoleHelper.queueConsoleCommand(etc, "save-on");
-       ConsoleHelper.queueConsoleCommand(etc, "save-all");
-       ConsoleHelper.queueConsoleCommand(etc, "save-off");
-    }
-
-    /**
      * resets force to initial value
      */
     public final void resetForce() {
@@ -206,4 +196,3 @@ public abstract class PluginUnit extends Observable implements Runnable {
     }
 
 }
-
