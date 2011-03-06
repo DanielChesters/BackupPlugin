@@ -49,11 +49,10 @@ public final class BackupUnit extends PluginUnit {
 
         MessageHandler.log(Level.INFO, "Starting backup process..");
 
-        // save world and disable saving for backup process
-        saveWorld();
         etc.savePlayers();
 
         try {
+            etc.getWorld(worldname).save();
             // generate filename
             String filename = generateFilename(".zip");
 
@@ -67,7 +66,6 @@ public final class BackupUnit extends PluginUnit {
         } catch (Exception e) {
             MessageHandler.log(Level.SEVERE, "Error during backup: ", e);
         } finally {
-            ConsoleHelper.queueConsoleCommand(etc, "save-on");
             setChanged();
             notifyObservers();
         }
