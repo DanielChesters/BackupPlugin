@@ -52,7 +52,7 @@ public final class BackupUnit extends PluginUnit {
         etc.savePlayers();
 
         try {
-            etc.getWorld(worldname).save();
+            etc.getWorld(this.getWorkDir().getName()).save();
             // generate filename
             String filename = generateFilename(".zip");
 
