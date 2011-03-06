@@ -88,10 +88,10 @@ public final class MapperUnit extends PluginUnit {
 
         MessageHandler.log(Level.INFO, "Starting map generation process.. this could take a while!");
 
-        etc.savePlayers();
+        server.savePlayers();
 
         final String worldname = this.getWorkDir().getName();
-        final World world = etc.getWorld(worldname);
+        final World world = server.getWorld(worldname);
 
         if (world == null) {
             MessageHandler.warning(String.format("World %s don't exist", worldname));

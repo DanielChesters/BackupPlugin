@@ -50,11 +50,11 @@ public final class BackupUnit extends PluginUnit {
 
         MessageHandler.log(Level.INFO, "Starting backup process..");
 
-        etc.savePlayers();
+        server.savePlayers();
 
         try {
             final String worldname = this.getWorkDir().getName();
-            final World world = etc.getWorld(worldname);
+            final World world = server.getWorld(worldname);
             if (world == null) {
                 MessageHandler.warning(String.format("World %s don't exist", worldname));
             } else {
