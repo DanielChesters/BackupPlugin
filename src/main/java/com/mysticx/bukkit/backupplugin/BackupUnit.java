@@ -51,6 +51,7 @@ public final class BackupUnit extends PluginUnit {
 
         // save world and disable saving for backup process
         saveWorld();
+        etc.savePlayers();
 
         try {
             for (String worldname : cc.getWorlds()) {
