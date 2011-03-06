@@ -93,7 +93,7 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
         String separator = System.getProperty("file.separator");
 
         // some important values
-        String world = config.getString("level-name", "world");
+        String worlds = config.getString("level-name", "world");
         String backupFolder = config.getString("backup-path", "world-backups");
         String mapperPath = config.getString("mapper-executable", "mcmap" + separator + "mcmap.exe");
         String mapFolder = config.getString("map-path", "world-maps");
@@ -137,7 +137,9 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
 
         // init cache
         this.cc = CacheControl.getInstance();
-        this.cc.addWorld(world);
+        for (String world:worlds.split(";")){
+            this.cc.addWorld(world);
+        }
         this.cc.setTimeUnit(timeunit);
         this.cc.setCacheLifetime(cacheLifetime);
         this.cc.setTempDir(new File(tempdir));

@@ -125,7 +125,13 @@ public final class CacheControl {
      * @param worldname
      */
     public void addWorld(String worldname) {
-        worlds.putIfAbsent(worldname, new File(worldname));
+        File world = new File(worldname);
+        if (world.exists() && world.isDirectory()) {
+            worlds.putIfAbsent(worldname, world);
+        } else {
+            MessageHandler.warning(String.format("World %s doesn't exist", worldname));
+        }
+
 
     }
 
@@ -201,7 +207,13 @@ public final class CacheControl {
         File cache = new File(cacheRoot, worldname);
 
         if (!cache.exists()) {
-            return true;
+            if(cache.mkdirs()) {
+                return true;
+            } else {
+                MessageHandler.warning(String.format("Can't create %s cache folder", worldname));
+                return false;
+            }
+
         }
 
         MessageHandler.log(Level.FINEST, "deleteCache() obtaining lock..");
