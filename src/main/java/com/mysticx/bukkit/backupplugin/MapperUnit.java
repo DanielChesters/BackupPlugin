@@ -98,8 +98,6 @@ public final class MapperUnit extends PluginUnit {
         } catch (Exception e) {
             MessageHandler.log(Level.SEVERE, "An error ocurred during mapping", e);
             return;
-        } finally {
-            ConsoleHelper.queueConsoleCommand(etc, "save-on");
         }
 
         // create folders
