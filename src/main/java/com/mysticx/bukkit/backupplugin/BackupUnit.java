@@ -53,7 +53,7 @@ public final class BackupUnit extends PluginUnit {
         server.savePlayers();
 
         try {
-            final String worldname = this.getWorkDir().getName();
+            final String worldname = this.cc.getWorld().getName();
             final World world = server.getWorld(worldname);
             if (world == null) {
                 MessageHandler.warning(String.format("World %s don't exist", worldname));

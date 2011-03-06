@@ -90,7 +90,7 @@ public final class MapperUnit extends PluginUnit {
 
         server.savePlayers();
 
-        final String worldname = this.getWorkDir().getName();
+        final String worldname = this.cc.getWorld().getName();
         final World world = server.getWorld(worldname);
 
         if (world == null) {
