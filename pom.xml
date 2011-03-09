@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mysticx</groupId>
   <artifactId>backupplugin</artifactId>
-  <version>0.8.6</version>
+  <version>0.8.7</version>
   <name>BackupPlugin</name>
   <url>http://www.bukkit.org</url>
   <repositories>
