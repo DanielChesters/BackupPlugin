@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -234,10 +235,17 @@ public final class BackupPlugin extends JavaPlugin implements Observer {
         DateFormat df = new SimpleDateFormat(pattern);
         df.setLenient(true);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(df.parse(time));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        MessageHandler.log(Level.FINEST, "firstRun: " + calendar.toString());
+        Calendar calendarBis = Calendar.getInstance();
+        calendarBis.setTime(df.parse(time));
+
+        calendar.set(Calendar.HOUR_OF_DAY, calendarBis.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, calendarBis.get(Calendar.MINUTE));
+
+        MessageHandler.log(Level.FINEST, "firstRun : " + calendar.getTime().toString());
 
         long nextRun = calendar.getTimeInMillis();
 
