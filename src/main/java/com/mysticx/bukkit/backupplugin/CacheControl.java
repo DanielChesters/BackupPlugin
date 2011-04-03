@@ -281,7 +281,7 @@ public final class CacheControl {
             MessageHandler.log(Level.FINEST, "persistCache() finished zip operation..");
 
             if (cacheHistory > 0) {
-                iohelper.deleteOldFiles(currentCache.getParentFile(), this.world.getName(), cacheHistory);
+                iohelper.deleteOldFiles(outputFile.getParentFile(), this.world.getName(), cacheHistory);
             }
             return true;
         } catch (IOException e) {
